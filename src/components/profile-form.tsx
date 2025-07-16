@@ -2,8 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,9 +18,26 @@ interface ProfileFormProps {
     initialData: UserProfile;
 }
 
+async function updateProfile(data: UserProfile) {
+  const response = await fetch('/api/profile', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result.error || "Impossible de mettre à jour le profil.");
+  }
+
+  return result;
+}
+
 export function ProfileForm({ initialData }: ProfileFormProps) {
   const router = useRouter();
-  const [isPending, setIsPending] = useState(false);
 
   const form = useForm<UserProfile>({
     resolver: zodResolver(profileFormSchema),
@@ -28,41 +45,27 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
     mode: "onChange",
   });
 
-  async function onSubmit(data: UserProfile) {
-    setIsPending(true);
-    try {
-      const response = await fetch('/api/profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+  const { mutate, isPending } = useMutation({
+    mutationFn: updateProfile,
+    onSuccess: (data) => {
+      toast({
+        title: "Succès !",
+        description: data.message,
       });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        toast({
-          title: "Succès !",
-          description: result.message,
-        });
-        router.refresh();
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Oh oh ! Quelque chose s'est mal passé.",
-          description: result.error || "Impossible de mettre à jour le profil. Veuillez réessayer.",
-        });
-      }
-    } catch (error) {
+      router.refresh();
+      form.reset(form.getValues());
+    },
+    onError: (error) => {
       toast({
         variant: "destructive",
-        title: "Erreur réseau",
-        description: "Impossible de contacter le serveur. Veuillez réessayer plus tard.",
+        title: "Oh oh ! Quelque chose s'est mal passé.",
+        description: error.message,
       });
-    } finally {
-      setIsPending(false);
-    }
+    },
+  });
+
+  function onSubmit(data: UserProfile) {
+    mutate(data);
   }
 
   return (
