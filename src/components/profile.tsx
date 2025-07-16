@@ -25,9 +25,8 @@ export default async function Profile() {
 
   if (!profileData) {
     // This could happen if profile creation failed after sign-up.
-    // We could redirect to a profile setup page or show an error.
-    // For now, we'll redirect to logout to be safe.
-    await logout();
+    // Redirect to home page. The session is still active, but they will be prompted to handle their profile.
+    // For now, redirecting to the root is a safe action.
     redirect('/'); 
   }
 
