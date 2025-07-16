@@ -1,4 +1,3 @@
-// Ce fichier n'existe pas, créez-le
 "use server";
 
 import { createServerClient } from "@/lib/supabase/server";
@@ -72,5 +71,6 @@ export async function signup(formData: FormData) {
 export async function logout() {
   const supabase = createServerClient();
   await supabase.auth.signOut();
+  revalidatePath("/", "layout");
   redirect("/");
 }

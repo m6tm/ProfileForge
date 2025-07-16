@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { createServerClient } from '@/lib/supabase/server';
 import { LogOut, Rocket } from 'lucide-react';
 import { redirect } from 'next/navigation';
+import { logout } from '@/app/auth/actions';
 
 export default async function Profile() {
   const supabase = createServerClient();
@@ -41,13 +42,13 @@ export default async function Profile() {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
+    <div className="w-full max-w-6xl mx-auto p-4 space-y-8 animate-in fade-in duration-500">
       <header className="flex items-center justify-between py-4 border-b">
         <div className="flex items-center gap-2">
           <Rocket className="w-8 h-8 text-primary" />
           <h1 className="text-2xl font-bold font-headline">ProfileForge</h1>
         </div>
-        <form action="/auth/logout" method="post">
+        <form action={logout}>
           <Button variant="ghost" type="submit">
             <LogOut className="mr-2 h-4 w-4" />
             Déconnexion
