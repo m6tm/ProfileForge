@@ -2,7 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,11 +17,12 @@ import { updateProfile } from "@/lib/actions";
 
 interface ProfileFormProps {
     initialData: UserProfile;
-    onUpdate: (data: UserProfile) => void;
 }
 
-export function ProfileForm({ initialData, onUpdate }: ProfileFormProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+export function ProfileForm({ initialData }: ProfileFormProps) {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
   const form = useForm<UserProfile>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: initialData,
@@ -28,23 +30,24 @@ export function ProfileForm({ initialData, onUpdate }: ProfileFormProps) {
   });
 
   async function onSubmit(data: UserProfile) {
-    setIsSubmitting(true);
-    const result = await updateProfile(data);
-    setIsSubmitting(false);
+    startTransition(async () => {
+      const result = await updateProfile(data);
 
-    if (result.success) {
-      toast({
-        title: "Succès !",
-        description: result.message,
-      });
-      onUpdate(data);
-    } else {
-      toast({
-        variant: "destructive",
-        title: "Oh oh ! Quelque chose s'est mal passé.",
-        description: "Impossible de mettre à jour le profil. Veuillez réessayer.",
-      });
-    }
+      if (result.success) {
+        toast({
+          title: "Succès !",
+          description: result.message,
+        });
+        // Refresh the page to show the updated data
+        router.refresh();
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Oh oh ! Quelque chose s'est mal passé.",
+          description: result.message || "Impossible de mettre à jour le profil. Veuillez réessayer.",
+        });
+      }
+    });
   }
 
   return (
@@ -88,7 +91,7 @@ export function ProfileForm({ initialData, onUpdate }: ProfileFormProps) {
               name="bio"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Biographie *</FormLabel>
+                  <FormLabel>Biographie</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Parlez-nous un peu de vous"
@@ -160,11 +163,11 @@ export function ProfileForm({ initialData, onUpdate }: ProfileFormProps) {
             </div>
             
             <div className="flex gap-2">
-              <Button type="submit" disabled={isSubmitting || !form.formState.isDirty}>
-                {isSubmitting ? 'Enregistrement...' : 'Enregistrer les modifications'}
+              <Button type="submit" disabled={isPending || !form.formState.isDirty}>
+                {isPending ? 'Enregistrement...' : 'Enregistrer les modifications'}
               </Button>
-              <Button variant="outline" type="button" disabled={isSubmitting} onClick={() => form.reset(initialData)}>
-                Réinitialiser
+              <Button variant="outline" type="button" disabled={isPending} onClick={() => form.reset(initialData)}>
+                Annuler
               </Button>
             </div>
           </form>

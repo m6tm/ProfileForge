@@ -1,29 +1,44 @@
-"use client";
-
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { ProfileForm } from '@/components/profile-form';
 import { AiFeatures } from '@/components/ai-features';
+import { ProfileForm } from '@/components/profile-form';
+import { Button } from '@/components/ui/button';
+import { createServerClient } from '@/lib/supabase/server';
 import { LogOut, Rocket } from 'lucide-react';
-import type { UserProfile } from '@/lib/types';
+import { redirect } from 'next/navigation';
 
-interface ProfileProps {
-  onLogout: () => void;
-}
+export default async function Profile() {
+  const supabase = createServerClient();
 
-const initialProfileData: UserProfile = {
-    fullName: 'Alex Dubois',
-    email: 'alex.dubois@exemple.com',
-    bio: 'Ingénieur logiciel passionné par la création d\'applications web belles et fonctionnelles. Intéressé par l\'IA, les systèmes de design et l\'open-source.',
-    website: 'https://alexdubois.com',
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect('/');
+  }
+
+  const { data: profileData } = await supabase
+    .from('Profile')
+    .select('*')
+    .eq('userId', user.id)
+    .single();
+
+  if (!profileData) {
+    // This could happen if profile creation failed after sign-up.
+    // We could redirect to a profile setup page or show an error.
+    // For now, we'll redirect to logout to be safe.
+    redirect('/auth/logout'); 
+  }
+
+  const initialProfileData = {
+    fullName: profileData.fullName,
+    email: profileData.email,
+    bio: profileData.bio || '',
+    website: profileData.website || '',
     preferences: {
-        newsletter: true,
-        marketing: false,
-    }
-};
-
-export default function Profile({ onLogout }: ProfileProps) {
-  const [profileData, setProfileData] = useState<UserProfile>(initialProfileData);
+      newsletter: profileData.newsletter,
+      marketing: profileData.marketing,
+    },
+  };
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
@@ -32,17 +47,19 @@ export default function Profile({ onLogout }: ProfileProps) {
           <Rocket className="w-8 h-8 text-primary" />
           <h1 className="text-2xl font-bold font-headline">ProfileForge</h1>
         </div>
-        <Button variant="ghost" onClick={onLogout}>
-          <LogOut className="mr-2 h-4 w-4" />
-          Déconnexion
-        </Button>
+        <form action="/auth/logout" method="post">
+          <Button variant="ghost" type="submit">
+            <LogOut className="mr-2 h-4 w-4" />
+            Déconnexion
+          </Button>
+        </form>
       </header>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         <div className="lg:col-span-2">
-            <ProfileForm initialData={profileData} onUpdate={setProfileData} />
+          <ProfileForm initialData={initialProfileData} />
         </div>
         <div className="lg:col-span-1">
-            <AiFeatures profileData={profileData} />
+          <AiFeatures profileData={initialProfileData} />
         </div>
       </div>
     </div>

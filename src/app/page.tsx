@@ -1,27 +1,21 @@
-"use client";
-
-import { useState } from "react";
 import AuthForm from "@/components/auth-form";
-import Profile from "@/components/profile";
+import { createServerClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
-export default function Home() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+export default async function Home() {
+  const supabase = createServerClient();
 
-  const handleAuthSuccess = () => {
-    setIsAuthenticated(true);
-  };
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-  };
+  if (session) {
+    redirect("/profile");
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-4 selection:bg-primary/20">
-      {isAuthenticated ? (
-        <Profile onLogout={handleLogout} />
-      ) : (
-        <AuthForm onAuthSuccess={handleAuthSuccess} />
-      )}
+      <AuthForm />
     </div>
   );
 }
