@@ -63,7 +63,6 @@ export async function signup(formData: FormData) {
       return { error: "Une erreur est survenue lors de la création de votre profil."};
   }
 
-
   revalidatePath("/", "layout");
   redirect("/profile");
 }
