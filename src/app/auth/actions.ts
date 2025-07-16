@@ -30,7 +30,7 @@ export async function signup(formData: FormData) {
   const fullName = formData.get("fullName") as string;
   const supabase = createServerClient();
 
-  const { error: signUpError, data } = await supabase.auth.signUp({
+  const { error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -41,33 +41,13 @@ export async function signup(formData: FormData) {
     },
   });
 
-  if (signUpError) {
+  if (error) {
     return { error: "Impossible de créer le compte. L'utilisateur existe peut-être déjà." };
   }
-
-  if (!data.user) {
-    return { error: "Impossible de créer le compte." };
-  }
-
-  // Create a profile entry for the new user
-  const { error: profileError } = await supabase.from('Profile').insert({
-    userId: data.user.id,
-    email: email,
-    fullName: fullName,
-  });
   
-  if (profileError) {
-      // If profile creation fails, we should probably delete the user
-      // to avoid inconsistent state. For now, we'll just log the error.
-      console.error('Failed to create profile for new user:', profileError);
-      // Even if profile creation fails, we redirect to let the user try again later.
-      // The profile page will handle the missing profile case.
-      await supabase.auth.signOut();
-      return { error: "Une erreur est survenue lors de la création de votre profil. Veuillez réessayer de vous inscrire."};
-  }
-
-  revalidatePath("/", "layout");
-  redirect("/profile");
+  // A message will be shown to the user to check their email.
+  // The profile will be created in the callback route.
+  return { error: null };
 }
 
 export async function logout() {

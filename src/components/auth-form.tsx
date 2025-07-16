@@ -8,30 +8,33 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Rocket } from "lucide-react";
 import { login, signup } from "@/app/auth/actions";
 import { toast } from "@/hooks/use-toast";
-import { useTransition } from "react";
+import { useTransition, useState } from "react";
 
 export default function AuthForm() {
   const [isPending, startTransition] = useTransition();
+  const [showVerificationMessage, setShowVerificationMessage] = useState(false);
 
   const handleAuthAction = (formData: FormData) => {
     startTransition(async () => {
       const action = formData.get('action');
-      let error;
+      let result;
 
       if (action === 'signup') {
-        const result = await signup(formData);
-        error = result?.error;
+        result = await signup(formData);
+        if (result && !result.error) {
+          setShowVerificationMessage(true);
+        }
       } else {
-        const result = await login(formData);
-        error = result?.error;
+        result = await login(formData);
       }
 
-      if (error) {
+      if (result?.error) {
         toast({
           variant: "destructive",
           title: "Oh oh ! Quelque chose s'est mal passé.",
-          description: error,
+          description: result.error,
         });
+        setShowVerificationMessage(false);
       }
     });
   };
@@ -42,6 +45,16 @@ export default function AuthForm() {
         <Rocket className="w-8 h-8 text-primary" />
         <h1>ProfileForge</h1>
       </div>
+      {showVerificationMessage ? (
+        <Card className="w-[400px]">
+          <CardHeader>
+            <CardTitle>Vérifiez votre e-mail</CardTitle>
+            <CardDescription>
+              Un lien de vérification a été envoyé à votre adresse e-mail. Veuillez cliquer sur ce lien pour continuer.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      ) : (
       <Tabs defaultValue="login" className="w-[400px]">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="login">Connexion</TabsTrigger>
@@ -102,6 +115,7 @@ export default function AuthForm() {
           </Card>
         </TabsContent>
       </Tabs>
+      )}
     </div>
   );
 }
