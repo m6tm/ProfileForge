@@ -1,4 +1,3 @@
-// This is a new file
 import Profile from "@/components/profile";
 import { createServerClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
