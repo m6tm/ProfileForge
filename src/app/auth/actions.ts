@@ -45,8 +45,8 @@ export async function signup(formData: FormData) {
     return { error: "Impossible de créer le compte. L'utilisateur existe peut-être déjà." };
   }
   
-  // A message will be shown to the user to check their email.
-  // The profile will be created in the callback route.
+  // Un message sera affiché à l'utilisateur pour qu'il vérifie son e-mail.
+  // Le profil sera créé dans la route de callback.
   return { error: null };
 }
 
