@@ -1,11 +1,11 @@
 "use server";
 
-import { createServerClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { profileFormSchema, type UserProfile } from "@/lib/types";
 
 export async function updateProfile(data: UserProfile): Promise<{ success: boolean; message: string }> {
-  const supabase = createServerClient();
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -13,7 +13,7 @@ export async function updateProfile(data: UserProfile): Promise<{ success: boole
   if (!user) {
     return { success: false, message: "Utilisateur non authentifié." };
   }
-  
+
   const validatedFields = profileFormSchema.safeParse(data);
 
   if (!validatedFields.success) {
@@ -24,7 +24,7 @@ export async function updateProfile(data: UserProfile): Promise<{ success: boole
   }
 
   const { fullName, bio, website, preferences } = validatedFields.data;
-  
+
   const { error } = await supabase
     .from("Profile")
     .update({

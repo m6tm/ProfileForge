@@ -1,30 +1,27 @@
 import { ProfileForm } from '@/components/profile-form';
 import { Button } from '@/components/ui/button';
-import { createServerClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 import { LogOut, Rocket } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { logout } from '@/app/auth/actions';
+import { getPrisma } from '@/lib/prisma';
 
 export default async function Profile() {
-  const supabase = createServerClient();
+  const supabase = await createClient();
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
+  const profileData = await getPrisma().profile.findUnique({
+    where: {
+      userId: user!.id,
+    },
+  });
+
+  if (!profileData) {
+    console.error("Erreur lors de la récupération du profil ou profil non trouvé:");
     redirect('/');
-  }
-
-  const { data: profileData, error } = await supabase
-    .from('Profile')
-    .select('*')
-    .eq('userId', user.id)
-    .single();
-
-  if (error || !profileData) {
-     console.error("Erreur lors de la récupération du profil ou profil non trouvé:", error);
-     redirect('/');
   }
 
 

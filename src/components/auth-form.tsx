@@ -53,68 +53,71 @@ export default function AuthForm() {
               Un lien de vérification a été envoyé à votre adresse e-mail. Veuillez cliquer sur ce lien pour continuer.
             </CardDescription>
           </CardHeader>
+          <CardContent>
+            <Button variant="outline" onClick={() => window.location.reload()}>Se connecter</Button>
+          </CardContent>
         </Card>
       ) : (
-      <Tabs defaultValue="login" className="w-[400px]">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="login">Connexion</TabsTrigger>
-          <TabsTrigger value="register">S'inscrire</TabsTrigger>
-        </TabsList>
-        <TabsContent value="login">
-          <Card>
-            <CardHeader>
-              <CardTitle>Content de vous revoir</CardTitle>
-              <CardDescription>Entrez vos identifiants pour accéder à votre profil.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form action={handleAuthAction}>
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" name="email" type="email" placeholder="m@exemple.com" required disabled={isPending} />
+        <Tabs defaultValue="login" className="w-[400px]">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="login">Connexion</TabsTrigger>
+            <TabsTrigger value="register">S'inscrire</TabsTrigger>
+          </TabsList>
+          <TabsContent value="login">
+            <Card>
+              <CardHeader>
+                <CardTitle>Content de vous revoir</CardTitle>
+                <CardDescription>Entrez vos identifiants pour accéder à votre profil.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form action={handleAuthAction}>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email</Label>
+                      <Input id="email" name="email" type="email" placeholder="m@exemple.com" required disabled={isPending} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="password">Mot de passe</Label>
+                      <Input id="password" name="password" type="password" required disabled={isPending} />
+                    </div>
+                    <Button type="submit" name="action" value="login" className="w-full" disabled={isPending}>
+                      {isPending ? 'Connexion en cours...' : 'Connexion'}
+                    </Button>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Mot de passe</Label>
-                    <Input id="password" name="password" type="password" required disabled={isPending} />
+                </form>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          <TabsContent value="register">
+            <Card>
+              <CardHeader>
+                <CardTitle>Créer un compte</CardTitle>
+                <CardDescription>Rejoignez ProfileForge pour gérer votre profil avec l'IA.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form action={handleAuthAction}>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="register-email">Email</Label>
+                      <Input id="register-email" name="email" type="email" placeholder="m@exemple.com" required disabled={isPending} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="register-fullName">Nom complet</Label>
+                      <Input id="register-fullName" name="fullName" type="text" placeholder="Alex Dubois" required disabled={isPending} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="register-password">Mot de passe</Label>
+                      <Input id="register-password" name="password" type="password" required disabled={isPending} />
+                    </div>
+                    <Button type="submit" name="action" value="signup" className="w-full" disabled={isPending}>
+                      {isPending ? 'Inscription en cours...' : "S'inscrire"}
+                    </Button>
                   </div>
-                  <Button type="submit" name="action" value="login" className="w-full" disabled={isPending}>
-                    {isPending ? 'Connexion en cours...' : 'Connexion'}
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        <TabsContent value="register">
-          <Card>
-            <CardHeader>
-              <CardTitle>Créer un compte</CardTitle>
-              <CardDescription>Rejoignez ProfileForge pour gérer votre profil avec l'IA.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form action={handleAuthAction}>
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="register-email">Email</Label>
-                    <Input id="register-email" name="email" type="email" placeholder="m@exemple.com" required disabled={isPending} />
-                  </div>
-                   <div className="space-y-2">
-                    <Label htmlFor="register-fullName">Nom complet</Label>
-                    <Input id="register-fullName" name="fullName" type="text" placeholder="Alex Dubois" required disabled={isPending} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="register-password">Mot de passe</Label>
-                    <Input id="register-password" name="password" type="password" required disabled={isPending} />
-                  </div>
-                  <Button type="submit" name="action" value="signup" className="w-full" disabled={isPending}>
-                    {isPending ? 'Inscription en cours...' : "S'inscrire"}
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+                </form>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       )}
     </div>
   );

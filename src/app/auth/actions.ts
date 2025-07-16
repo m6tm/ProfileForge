@@ -1,6 +1,6 @@
 "use server";
 
-import { createServerClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
@@ -8,12 +8,14 @@ import { headers } from "next/headers";
 export async function login(formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-  const supabase = createServerClient();
+  const supabase = createClient();
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { error } = await (await supabase).auth.signInWithPassword({
     email,
     password,
   });
+
+  console.log(error)
 
   if (error) {
     return { error: "Les identifiants sont incorrects." };
@@ -24,13 +26,13 @@ export async function login(formData: FormData) {
 }
 
 export async function signup(formData: FormData) {
-  const origin = headers().get("origin");
+  const origin = (await headers()).get("origin");
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const fullName = formData.get("fullName") as string;
-  const supabase = createServerClient();
+  const supabase = createClient();
 
-  const { error } = await supabase.auth.signUp({
+  const { error } = await (await supabase).auth.signUp({
     email,
     password,
     options: {
@@ -44,15 +46,15 @@ export async function signup(formData: FormData) {
   if (error) {
     return { error: "Impossible de créer le compte. L'utilisateur existe peut-être déjà." };
   }
-  
+
   // Un message sera affiché à l'utilisateur pour qu'il vérifie son e-mail.
   // Le profil sera créé dans la route de callback.
   return { error: null };
 }
 
 export async function logout() {
-  const supabase = createServerClient();
-  await supabase.auth.signOut();
+  const supabase = createClient();
+  await (await supabase).auth.signOut();
   revalidatePath("/", "layout");
   redirect("/");
 }
