@@ -39,14 +39,15 @@ export async function GET(request: Request) {
           where: { userId: user.id },
         });
 
+        const newData = {
+          userId: user.id,
+          email: user.email!,
+          fullName: user.user_metadata.full_name,
+          phoneNumber: user.user_metadata.phone_number,
+        }
         if (!existingProfile) {
           await prisma.profile.create({
-            data: {
-              userId: user.id,
-              email: user.email!,
-              fullName: user.user_metadata.full_name,
-              phoneNumber: user.user_metadata.phone_number,
-            },
+            data: newData,
           });
         }
       }
