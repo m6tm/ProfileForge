@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useTransition } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
 import { profileFormSchema, type UserProfile } from "@/lib/types";
-import { updateProfile } from "@/lib/actions";
 
 interface ProfileFormProps {
     initialData: UserProfile;
@@ -21,7 +20,7 @@ interface ProfileFormProps {
 
 export function ProfileForm({ initialData }: ProfileFormProps) {
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const [isPending, setIsPending] = useState(false);
 
   const form = useForm<UserProfile>({
     resolver: zodResolver(profileFormSchema),
@@ -30,10 +29,19 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
   });
 
   async function onSubmit(data: UserProfile) {
-    startTransition(async () => {
-      const result = await updateProfile(data);
+    setIsPending(true);
+    try {
+      const response = await fetch('/api/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
 
-      if (result.success) {
+      const result = await response.json();
+
+      if (response.ok) {
         toast({
           title: "Succès !",
           description: result.message,
@@ -43,10 +51,18 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
         toast({
           variant: "destructive",
           title: "Oh oh ! Quelque chose s'est mal passé.",
-          description: result.message || "Impossible de mettre à jour le profil. Veuillez réessayer.",
+          description: result.error || "Impossible de mettre à jour le profil. Veuillez réessayer.",
         });
       }
-    });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Erreur réseau",
+        description: "Impossible de contacter le serveur. Veuillez réessayer plus tard.",
+      });
+    } finally {
+      setIsPending(false);
+    }
   }
 
   return (
