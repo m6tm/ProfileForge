@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,30 +8,33 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Rocket } from "lucide-react";
 import { login, signup } from "@/app/auth/actions";
 import { toast } from "@/hooks/use-toast";
+import { useTransition } from "react";
 
 export default function AuthForm() {
+  const [isPending, startTransition] = useTransition();
 
-  const handleAuthAction = async (formData: FormData) => {
-    const action = formData.get('action');
-    let error;
+  const handleAuthAction = (formData: FormData) => {
+    startTransition(async () => {
+      const action = formData.get('action');
+      let error;
 
-    if (action === 'signup') {
-      const result = await signup(formData);
-      error = result?.error;
-    } else {
-      const result = await login(formData);
-      error = result?.error;
-    }
+      if (action === 'signup') {
+        const result = await signup(formData);
+        error = result?.error;
+      } else {
+        const result = await login(formData);
+        error = result?.error;
+      }
 
-    if (error) {
-      toast({
-        variant: "destructive",
-        title: "Oh oh ! Quelque chose s'est mal passé.",
-        description: error,
-      });
-    }
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Oh oh ! Quelque chose s'est mal passé.",
+          description: error,
+        });
+      }
+    });
   };
-
 
   return (
     <div className="flex flex-col items-center space-y-4">
@@ -53,13 +58,15 @@ export default function AuthForm() {
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" name="email" type="email" placeholder="m@exemple.com" required />
+                    <Input id="email" name="email" type="email" placeholder="m@exemple.com" required disabled={isPending} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="password">Mot de passe</Label>
-                    <Input id="password" name="password" type="password" required />
+                    <Input id="password" name="password" type="password" required disabled={isPending} />
                   </div>
-                  <Button type="submit" name="action" value="login" className="w-full">Connexion</Button>
+                  <Button type="submit" name="action" value="login" className="w-full" disabled={isPending}>
+                    {isPending ? 'Connexion en cours...' : 'Connexion'}
+                  </Button>
                 </div>
               </form>
             </CardContent>
@@ -76,17 +83,19 @@ export default function AuthForm() {
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="register-email">Email</Label>
-                    <Input id="register-email" name="email" type="email" placeholder="m@exemple.com" required />
+                    <Input id="register-email" name="email" type="email" placeholder="m@exemple.com" required disabled={isPending} />
                   </div>
                    <div className="space-y-2">
                     <Label htmlFor="register-fullName">Nom complet</Label>
-                    <Input id="register-fullName" name="fullName" type="text" placeholder="Alex Dubois" required />
+                    <Input id="register-fullName" name="fullName" type="text" placeholder="Alex Dubois" required disabled={isPending} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="register-password">Mot de passe</Label>
-                    <Input id="register-password" name="password" type="password" required />
+                    <Input id="register-password" name="password" type="password" required disabled={isPending} />
                   </div>
-                  <Button type="submit" name="action" value="signup" className="w-full">S'inscrire</Button>
+                  <Button type="submit" name="action" value="signup" className="w-full" disabled={isPending}>
+                    {isPending ? 'Inscription en cours...' : "S'inscrire"}
+                  </Button>
                 </div>
               </form>
             </CardContent>
