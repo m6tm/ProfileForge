@@ -1,11 +1,11 @@
 'use server';
 
 /**
- * @fileOverview Summarizes the user's profile information using AI.
+ * @fileOverview Résume les informations du profil de l'utilisateur à l'aide de l'IA.
  *
- * - summarizeProfile - A function that generates a summary of the user's profile.
- * - ProfileSummaryInput - The input type for the summarizeProfile function.
- * - ProfileSummaryOutput - The return type for the summarizeProfile function.
+ * - summarizeProfile - Une fonction qui génère un résumé du profil de l'utilisateur.
+ * - ProfileSummaryInput - Le type d'entrée pour la fonction summarizeProfile.
+ * - ProfileSummaryOutput - Le type de retour pour la fonction summarizeProfile.
  */
 
 import {ai} from '@/ai/genkit';
@@ -14,12 +14,12 @@ import {z} from 'genkit';
 const ProfileSummaryInputSchema = z.object({
   profileInformation: z
     .string()
-    .describe('The user profile information to be summarized.'),
+    .describe('Les informations du profil utilisateur à résumer.'),
 });
 export type ProfileSummaryInput = z.infer<typeof ProfileSummaryInputSchema>;
 
 const ProfileSummaryOutputSchema = z.object({
-  summary: z.string().describe('A summary of the user profile information.'),
+  summary: z.string().describe('Un résumé des informations du profil utilisateur.'),
 });
 export type ProfileSummaryOutput = z.infer<typeof ProfileSummaryOutputSchema>;
 
@@ -31,7 +31,7 @@ const prompt = ai.definePrompt({
   name: 'profileSummaryPrompt',
   input: {schema: ProfileSummaryInputSchema},
   output: {schema: ProfileSummaryOutputSchema},
-  prompt: `Summarize the following user profile information:\n\n{{{profileInformation}}}`,
+  prompt: `Résumez les informations de profil utilisateur suivantes :\n\n{{{profileInformation}}}`,
 });
 
 const profileSummaryFlow = ai.defineFlow(
@@ -44,7 +44,7 @@ const profileSummaryFlow = ai.defineFlow(
     const {output} = await prompt(input);
     return {
       ...output,
-      progress: 'Profile summary generated successfully.'
+      progress: 'Résumé du profil généré avec succès.'
     } as ProfileSummaryOutput & {progress: string};
   }
 );

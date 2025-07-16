@@ -25,26 +25,26 @@ export default function AuthForm({ onAuthSuccess }: AuthFormProps) {
         </div>
         <Tabs defaultValue="login" className="w-[400px]">
         <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="login">Login</TabsTrigger>
-            <TabsTrigger value="register">Register</TabsTrigger>
+            <TabsTrigger value="login">Connexion</TabsTrigger>
+            <TabsTrigger value="register">S'inscrire</TabsTrigger>
         </TabsList>
         <TabsContent value="login">
             <Card>
             <CardHeader>
-                <CardTitle>Welcome Back</CardTitle>
-                <CardDescription>Enter your credentials to access your profile.</CardDescription>
+                <CardTitle>Content de vous revoir</CardTitle>
+                <CardDescription>Entrez vos identifiants pour accéder à votre profil.</CardDescription>
             </CardHeader>
             <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
                     <Label htmlFor="login-email">Email</Label>
-                    <Input id="login-email" type="email" placeholder="m@example.com" required />
+                    <Input id="login-email" type="email" placeholder="m@exemple.com" required />
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="login-password">Password</Label>
+                    <Label htmlFor="login-password">Mot de passe</Label>
                     <Input id="login-password" type="password" required />
                 </div>
-                <Button type="submit" className="w-full">Login</Button>
+                <Button type="submit" className="w-full">Connexion</Button>
                 </form>
             </CardContent>
             </Card>
@@ -52,24 +52,24 @@ export default function AuthForm({ onAuthSuccess }: AuthFormProps) {
         <TabsContent value="register">
             <Card>
             <CardHeader>
-                <CardTitle>Create an Account</CardTitle>
-                <CardDescription>Join ProfileForge to manage your profile with AI.</CardDescription>
+                <CardTitle>Créer un compte</CardTitle>
+                <CardDescription>Rejoignez ProfileForge pour gérer votre profil avec l'IA.</CardDescription>
             </CardHeader>
             <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
                     <Label htmlFor="register-email">Email</Label>
-                    <Input id="register-email" type="email" placeholder="m@example.com" required />
+                    <Input id="register-email" type="email" placeholder="m@exemple.com" required />
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="register-password">Password</Label>
+                    <Label htmlFor="register-password">Mot de passe</Label>
                     <Input id="register-password" type="password" required />
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="confirm-password">Confirm Password</Label>
+                    <Label htmlFor="confirm-password">Confirmer le mot de passe</Label>
                     <Input id="confirm-password" type="password" required />
                 </div>
-                <Button type="submit" className="w-full">Register</Button>
+                <Button type="submit" className="w-full">S'inscrire</Button>
                 </form>
             </CardContent>
             </Card>

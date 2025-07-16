@@ -1,18 +1,17 @@
-// This file is machine-generated - edit with caution!
 'use server';
 /**
- * @fileOverview A flow to suggest profile updates to the user.
+ * @fileOverview Un flux pour suggérer des mises à jour de profil à l'utilisateur.
  *
- * - suggestProfileUpdates - A function that suggests profile updates based on current profile data.
- * - SuggestProfileUpdatesInput - The input type for the suggestProfileUpdates function.
- * - SuggestProfileUpdatesOutput - The return type for the suggestProfileUpdates function.
+ * - suggestProfileUpdates - Une fonction qui suggère des mises à jour de profil en fonction des données de profil actuelles.
+ * - SuggestProfileUpdatesInput - Le type d'entrée pour la fonction suggestProfileUpdates.
+ * - SuggestProfileUpdatesOutput - Le type de retour pour la fonction suggestProfileUpdates.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const SuggestProfileUpdatesInputSchema = z.object({
-  currentProfileData: z.record(z.any()).describe('The user data.'),
+  currentProfileData: z.record(z.any()).describe('Les données de l\'utilisateur.'),
 });
 export type SuggestProfileUpdatesInput = z.infer<
   typeof SuggestProfileUpdatesInputSchema
@@ -20,7 +19,7 @@ export type SuggestProfileUpdatesInput = z.infer<
 
 const SuggestProfileUpdatesOutputSchema = z.object({
   suggestions: z.array(z.string()).describe(
-    'A list of suggestions for profile updates, based on common best practices for profile completeness.'
+    'Une liste de suggestions de mises à jour de profil, basée sur les meilleures pratiques courantes pour la complétude du profil.'
   ),
 });
 export type SuggestProfileUpdatesOutput = z.infer<
@@ -37,13 +36,13 @@ const prompt = ai.definePrompt({
   name: 'suggestProfileUpdatesPrompt',
   input: {schema: SuggestProfileUpdatesInputSchema},
   output: {schema: SuggestProfileUpdatesOutputSchema},
-  prompt: `You are an AI assistant designed to help users complete their profile information.
+  prompt: `Vous êtes un assistant IA conçu pour aider les utilisateurs à compléter leurs informations de profil.
 
-  Based on the user's current profile data, suggest which fields the user should update to complete their profile.
-  Consider common best practices for profile completeness when making suggestions.
+  En fonction des données actuelles du profil de l'utilisateur, suggérez les champs que l'utilisateur devrait mettre à jour pour compléter son profil.
+  Tenez compte des meilleures pratiques courantes en matière de complétude de profil lors de vos suggestions.
 
-  Current profile data: {{{currentProfileData}}}
-  Suggestions:`,
+  Données de profil actuelles : {{{currentProfileData}}}
+  Suggestions :`,
 });
 
 const suggestProfileUpdatesFlow = ai.defineFlow(

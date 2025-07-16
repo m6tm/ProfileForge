@@ -34,15 +34,15 @@ export function ProfileForm({ initialData, onUpdate }: ProfileFormProps) {
 
     if (result.success) {
       toast({
-        title: "Success!",
+        title: "Succès !",
         description: result.message,
       });
       onUpdate(data);
     } else {
       toast({
         variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "Could not update profile. Please try again.",
+        title: "Oh oh ! Quelque chose s'est mal passé.",
+        description: "Impossible de mettre à jour le profil. Veuillez réessayer.",
       });
     }
   }
@@ -50,8 +50,8 @@ export function ProfileForm({ initialData, onUpdate }: ProfileFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Profile Details</CardTitle>
-        <CardDescription>Manage your personal information. Fields marked with * are required.</CardDescription>
+        <CardTitle>Détails du profil</CardTitle>
+        <CardDescription>Gérez vos informations personnelles. Les champs marqués d'un * sont obligatoires.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -61,9 +61,9 @@ export function ProfileForm({ initialData, onUpdate }: ProfileFormProps) {
               name="fullName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Full Name *</FormLabel>
+                  <FormLabel>Nom complet *</FormLabel>
                   <FormControl>
-                    <Input placeholder="Your full name" {...field} />
+                    <Input placeholder="Votre nom complet" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -76,9 +76,9 @@ export function ProfileForm({ initialData, onUpdate }: ProfileFormProps) {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Your email" {...field} readOnly disabled />
+                    <Input placeholder="Votre email" {...field} readOnly disabled />
                   </FormControl>
-                  <FormDescription>Your email address is not editable.</FormDescription>
+                  <FormDescription>Votre adresse e-mail n'est pas modifiable.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -88,10 +88,10 @@ export function ProfileForm({ initialData, onUpdate }: ProfileFormProps) {
               name="bio"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Bio *</FormLabel>
+                  <FormLabel>Biographie *</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Tell us a little bit about yourself"
+                      placeholder="Parlez-nous un peu de vous"
                       className="resize-none"
                       rows={4}
                       {...field}
@@ -106,9 +106,9 @@ export function ProfileForm({ initialData, onUpdate }: ProfileFormProps) {
               name="website"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Website</FormLabel>
+                  <FormLabel>Site web</FormLabel>
                   <FormControl>
-                    <Input placeholder="https://your-website.com" {...field} />
+                    <Input placeholder="https://votre-site-web.com" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -116,7 +116,7 @@ export function ProfileForm({ initialData, onUpdate }: ProfileFormProps) {
             />
             
             <div>
-              <h3 className="mb-4 text-lg font-medium">Preferences</h3>
+              <h3 className="mb-4 text-lg font-medium">Préférences</h3>
               <div className="space-y-4">
                 <FormField
                   control={form.control}
@@ -125,13 +125,13 @@ export function ProfileForm({ initialData, onUpdate }: ProfileFormProps) {
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">Newsletter</FormLabel>
-                        <FormDescription>Receive updates about new features and content.</FormDescription>
+                        <FormDescription>Recevez des mises à jour sur les nouvelles fonctionnalités et le contenu.</FormDescription>
                       </div>
                       <FormControl>
                         <Switch
                           checked={field.value}
                           onCheckedChange={field.onChange}
-                          aria-label="Toggle newsletter subscription"
+                          aria-label="Basculer l'abonnement à la newsletter"
                         />
                       </FormControl>
                     </FormItem>
@@ -143,14 +143,14 @@ export function ProfileForm({ initialData, onUpdate }: ProfileFormProps) {
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
-                        <FormLabel className="text-base">Marketing Emails</FormLabel>
-                        <FormDescription>Receive promotional emails and offers.</FormDescription>
+                        <FormLabel className="text-base">E-mails marketing</FormLabel>
+                        <FormDescription>Recevez des e-mails promotionnels et des offres.</FormDescription>
                       </div>
                       <FormControl>
                         <Switch
                           checked={field.value}
                           onCheckedChange={field.onChange}
-                          aria-label="Toggle marketing email subscription"
+                          aria-label="Basculer l'abonnement aux e-mails marketing"
                         />
                       </FormControl>
                     </FormItem>
@@ -161,10 +161,10 @@ export function ProfileForm({ initialData, onUpdate }: ProfileFormProps) {
             
             <div className="flex gap-2">
               <Button type="submit" disabled={isSubmitting || !form.formState.isDirty}>
-                {isSubmitting ? 'Saving...' : 'Save Changes'}
+                {isSubmitting ? 'Enregistrement...' : 'Enregistrer les modifications'}
               </Button>
               <Button variant="outline" type="button" disabled={isSubmitting} onClick={() => form.reset(initialData)}>
-                Reset
+                Réinitialiser
               </Button>
             </div>
           </form>

@@ -1,11 +1,11 @@
-// Sensitive data flagging flow
+// Flux de signalement des données sensibles
 'use server';
 /**
- * @fileOverview An AI agent that flags potentially sensitive data in user profile information.
+ * @fileOverview Un agent IA qui signale les données potentiellement sensibles dans les informations de profil utilisateur.
  *
- * - flagSensitiveData - A function that handles the sensitive data flagging process.
- * - FlagSensitiveDataInput - The input type for the flagSensitiveData function.
- * - FlagSensitiveDataOutput - The return type for the flagSensitiveData function.
+ * - flagSensitiveData - Une fonction qui gère le processus de signalement des données sensibles.
+ * - FlagSensitiveDataInput - Le type d'entrée pour la fonction flagSensitiveData.
+ * - FlagSensitiveDataOutput - Le type de retour pour la fonction flagSensitiveData.
  */
 
 import {ai} from '@/ai/genkit';
@@ -14,15 +14,15 @@ import {z} from 'genkit';
 const FlagSensitiveDataInputSchema = z.object({
   profileInformation: z
     .string()
-    .describe('The user profile information to analyze.'),
+    .describe('Les informations du profil utilisateur à analyser.'),
 });
 export type FlagSensitiveDataInput = z.infer<typeof FlagSensitiveDataInputSchema>;
 
 const FlagSensitiveDataOutputSchema = z.object({
   sensitiveDataFlags: z
     .array(z.string())
-    .describe('An array of potentially sensitive data points found in the profile information.'),
-  summary: z.string().describe('A summary of the analysis.'),
+    .describe('Un tableau de points de données potentiellement sensibles trouvés dans les informations de profil.'),
+  summary: z.string().describe('Un résumé de l\'analyse.'),
 });
 export type FlagSensitiveDataOutput = z.infer<typeof FlagSensitiveDataOutputSchema>;
 
@@ -34,18 +34,18 @@ const prompt = ai.definePrompt({
   name: 'flagSensitiveDataPrompt',
   input: {schema: FlagSensitiveDataInputSchema},
   output: {schema: FlagSensitiveDataOutputSchema},
-  prompt: `You are an AI assistant specializing in identifying potentially sensitive information in user profiles.
+  prompt: `Vous êtes un assistant IA spécialisé dans l'identification des informations potentiellement sensibles dans les profils utilisateur.
 
-  Analyze the following user profile information and identify any data points that could be considered sensitive, such as:
-  - Personally identifiable information (PII)
-  - Financial information
-  - Medical information
-  - Security credentials
-  - Private communications
+  Analysez les informations de profil utilisateur suivantes et identifiez tous les points de données qui pourraient être considérés comme sensibles, tels que :
+  - Informations d'identification personnelle (PII)
+  - Informations financières
+  - Informations médicales
+  - Identifiants de sécurité
+  - Communications privées
 
-  Return a list of the identified sensitive data points and a summary of the analysis.
+  Renvoyez une liste des points de données sensibles identifiés et un résumé de l'analyse.
 
-  User Profile Information: {{{profileInformation}}}
+  Informations du profil utilisateur : {{{profileInformation}}}
   `,
 });
 

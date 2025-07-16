@@ -31,13 +31,13 @@ export function AiFeatures({ profileData }: AiFeaturesProps) {
             const profileString = JSON.stringify(profileData, null, 2);
             const response = await summarizeProfile({ profileInformation: profileString });
             setResult({
-                title: 'Profile Summary',
+                title: 'Résumé du profil',
                 content: <p className="text-sm">{response.summary}</p>,
                 icon: FileText
             });
         } catch (error) {
             console.error(error);
-            setResult({ title: 'Error', content: <p>Could not generate summary.</p>, icon: AlertTriangle });
+            setResult({ title: 'Erreur', content: <p>Impossible de générer le résumé.</p>, icon: AlertTriangle });
         }
         setIsLoading(false);
     };
@@ -48,7 +48,7 @@ export function AiFeatures({ profileData }: AiFeaturesProps) {
         try {
             const response = await suggestProfileUpdates({ currentProfileData: profileData });
             setResult({
-                title: 'Update Suggestions',
+                title: 'Suggestions de mise à jour',
                 content: (
                     <ul className="list-disc list-inside space-y-1 text-sm">
                         {response.suggestions.map((s, i) => <li key={i}>{s}</li>)}
@@ -58,7 +58,7 @@ export function AiFeatures({ profileData }: AiFeaturesProps) {
             });
         } catch (error) {
             console.error(error);
-            setResult({ title: 'Error', content: <p>Could not get suggestions.</p>, icon: AlertTriangle });
+            setResult({ title: 'Erreur', content: <p>Impossible d'obtenir des suggestions.</p>, icon: AlertTriangle });
         }
         setIsLoading(false);
     };
@@ -70,7 +70,7 @@ export function AiFeatures({ profileData }: AiFeaturesProps) {
             const profileString = JSON.stringify(profileData, null, 2);
             const response = await flagSensitiveData({ profileInformation: profileString });
             setResult({
-                title: 'Sensitive Data Scan',
+                title: 'Analyse des données sensibles',
                 content: (
                     <div className="space-y-2 text-sm">
                         <p>{response.summary}</p>
@@ -85,7 +85,7 @@ export function AiFeatures({ profileData }: AiFeaturesProps) {
             });
         } catch (error) {
             console.error(error);
-            setResult({ title: 'Error', content: <p>Could not perform scan.</p>, icon: AlertTriangle });
+            setResult({ title: 'Erreur', content: <p>Impossible d'effectuer l'analyse.</p>, icon: AlertTriangle });
         }
         setIsLoading(false);
     };
@@ -93,14 +93,14 @@ export function AiFeatures({ profileData }: AiFeaturesProps) {
     return (
         <Card className="sticky top-8">
             <CardHeader>
-                <CardTitle>AI-Enhanced Tools</CardTitle>
-                <CardDescription>Use AI to improve your profile.</CardDescription>
+                <CardTitle>Outils améliorés par l'IA</CardTitle>
+                <CardDescription>Utilisez l'IA pour améliorer votre profil.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="flex flex-col space-y-2">
-                    <Button onClick={handleSummarize} disabled={isLoading} variant="outline"><FileText className="mr-2 h-4 w-4" /> Summarize Profile</Button>
-                    <Button onClick={handleSuggest} disabled={isLoading} variant="outline"><Lightbulb className="mr-2 h-4 w-4" /> Suggest Updates</Button>
-                    <Button onClick={handleScan} disabled={isLoading} variant="outline"><Scan className="mr-2 h-4 w-4" /> Scan for Sensitive Data</Button>
+                    <Button onClick={handleSummarize} disabled={isLoading} variant="outline"><FileText className="mr-2 h-4 w-4" /> Résumer le profil</Button>
+                    <Button onClick={handleSuggest} disabled={isLoading} variant="outline"><Lightbulb className="mr-2 h-4 w-4" /> Suggérer des mises à jour</Button>
+                    <Button onClick={handleScan} disabled={isLoading} variant="outline"><Scan className="mr-2 h-4 w-4" /> Analyser les données sensibles</Button>
                 </div>
 
                 {isLoading && (

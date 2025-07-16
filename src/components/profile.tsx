@@ -12,10 +12,10 @@ interface ProfileProps {
 }
 
 const initialProfileData: UserProfile = {
-    fullName: 'Alex Doe',
-    email: 'alex.doe@example.com',
-    bio: 'Software engineer with a passion for building beautiful and functional web applications. Interested in AI, design systems, and open-source.',
-    website: 'https://alexdoe.com',
+    fullName: 'Alex Dubois',
+    email: 'alex.dubois@exemple.com',
+    bio: 'Ingénieur logiciel passionné par la création d\'applications web belles et fonctionnelles. Intéressé par l\'IA, les systèmes de design et l\'open-source.',
+    website: 'https://alexdubois.com',
     preferences: {
         newsletter: true,
         marketing: false,
@@ -34,7 +34,7 @@ export default function Profile({ onLogout }: ProfileProps) {
         </div>
         <Button variant="ghost" onClick={onLogout}>
           <LogOut className="mr-2 h-4 w-4" />
-          Logout
+          Déconnexion
         </Button>
       </header>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
