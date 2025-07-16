@@ -27,7 +27,8 @@ export default async function Profile() {
     // This could happen if profile creation failed after sign-up.
     // We could redirect to a profile setup page or show an error.
     // For now, we'll redirect to logout to be safe.
-    redirect('/auth/logout'); 
+    await logout();
+    redirect('/'); 
   }
 
   const initialProfileData = {
