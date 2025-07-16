@@ -30,9 +30,9 @@ export default async function Profile() {
   }
 
   const initialProfileData: UserProfile = {
-    fullName: profileData.fullName,
-    email: profileData.email,
-    phoneNumber: profileData.phoneNumber,
+    fullName: profileData.fullName || '',
+    email: profileData.email || '',
+    phoneNumber: profileData.phoneNumber || '',
     bio: profileData.bio || '',
     website: profileData.website || '',
     preferences: {
