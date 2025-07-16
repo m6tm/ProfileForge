@@ -53,9 +53,6 @@ export default function AuthForm() {
               Un lien de vérification a été envoyé à votre adresse e-mail. Veuillez cliquer sur ce lien pour continuer.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <Button variant="outline" onClick={() => window.location.reload()}>Se connecter</Button>
-          </CardContent>
         </Card>
       ) : (
         <Tabs defaultValue="login" className="w-[400px]">
@@ -92,18 +89,22 @@ export default function AuthForm() {
             <Card>
               <CardHeader>
                 <CardTitle>Créer un compte</CardTitle>
-                <CardDescription>Rejoignez ProfileForge pour gérer votre profil avec l'IA.</CardDescription>
+                <CardDescription>Rejoignez ProfileForge pour gérer votre profil.</CardDescription>
               </CardHeader>
               <CardContent>
                 <form action={handleAuthAction}>
                   <div className="space-y-4">
+                     <div className="space-y-2">
+                      <Label htmlFor="register-fullName">Nom complet</Label>
+                      <Input id="register-fullName" name="fullName" type="text" placeholder="Alex Dubois" required disabled={isPending} />
+                    </div>
                     <div className="space-y-2">
                       <Label htmlFor="register-email">Email</Label>
                       <Input id="register-email" name="email" type="email" placeholder="m@exemple.com" required disabled={isPending} />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="register-fullName">Nom complet</Label>
-                      <Input id="register-fullName" name="fullName" type="text" placeholder="Alex Dubois" required disabled={isPending} />
+                     <div className="space-y-2">
+                      <Label htmlFor="register-phoneNumber">Numéro de téléphone</Label>
+                      <Input id="register-phoneNumber" name="phoneNumber" type="tel" placeholder="0612345678" required disabled={isPending} />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="register-password">Mot de passe</Label>

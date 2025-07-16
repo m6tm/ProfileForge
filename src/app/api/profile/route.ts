@@ -22,7 +22,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: 'Données invalides.', details: validatedFields.error.flatten() }, { status: 400 });
   }
 
-  const { fullName, bio, website, preferences } = validatedFields.data;
+  const { fullName, phoneNumber, bio, website, preferences } = validatedFields.data;
   const prisma = getPrisma();
 
   try {
@@ -30,6 +30,7 @@ export async function PUT(request: NextRequest) {
       where: { userId: user.id },
       data: {
         fullName,
+        phoneNumber,
         bio,
         website,
         newsletter: preferences.newsletter,

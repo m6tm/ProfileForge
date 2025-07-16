@@ -30,6 +30,7 @@ export async function signup(formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const fullName = formData.get("fullName") as string;
+  const phoneNumber = formData.get("phoneNumber") as string;
   const supabase = createClient();
 
   const { error } = await (await supabase).auth.signUp({
@@ -39,6 +40,7 @@ export async function signup(formData: FormData) {
       emailRedirectTo: `${origin}/auth/callback`,
       data: {
         full_name: fullName,
+        phone_number: phoneNumber,
       }
     },
   });
@@ -47,8 +49,6 @@ export async function signup(formData: FormData) {
     return { error: "Impossible de créer le compte. L'utilisateur existe peut-être déjà." };
   }
 
-  // Un message sera affiché à l'utilisateur pour qu'il vérifie son e-mail.
-  // Le profil sera créé dans la route de callback.
   return { error: null };
 }
 

@@ -13,9 +13,13 @@ export default async function Profile() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  if (!user) {
+    redirect('/');
+  }
+
   const profileData = await getPrisma().profile.findUnique({
     where: {
-      userId: user!.id,
+      userId: user.id,
     },
   });
 
@@ -24,10 +28,10 @@ export default async function Profile() {
     redirect('/');
   }
 
-
   const initialProfileData = {
     fullName: profileData.fullName,
     email: profileData.email,
+    phoneNumber: profileData.phoneNumber,
     bio: profileData.bio || '',
     website: profileData.website || '',
     preferences: {

@@ -106,6 +106,19 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
             />
             <FormField
               control={form.control}
+              name="phoneNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Numéro de téléphone *</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Votre numéro de téléphone" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="bio"
               render={({ field }) => (
                 <FormItem>

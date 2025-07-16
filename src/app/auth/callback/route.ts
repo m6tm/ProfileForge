@@ -35,13 +35,20 @@ export async function GET(request: Request) {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
         const prisma = getPrisma()
-        await prisma.profile.create({
-          data: {
-            userId: user.id,
-            email: user.email!,
-            fullName: user.user_metadata.full_name,
-          },
-        })
+        const existingProfile = await prisma.profile.findUnique({
+          where: { userId: user.id },
+        });
+
+        if (!existingProfile) {
+          await prisma.profile.create({
+            data: {
+              userId: user.id,
+              email: user.email!,
+              fullName: user.user_metadata.full_name,
+              phoneNumber: user.user_metadata.phone_number,
+            },
+          });
+        }
       }
       return NextResponse.redirect(`${origin}${next}`);
     }
