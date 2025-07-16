@@ -60,7 +60,10 @@ export async function signup(formData: FormData) {
       // If profile creation fails, we should probably delete the user
       // to avoid inconsistent state. For now, we'll just log the error.
       console.error('Failed to create profile for new user:', profileError);
-      return { error: "Une erreur est survenue lors de la création de votre profil."};
+      // Even if profile creation fails, we redirect to let the user try again later.
+      // The profile page will handle the missing profile case.
+      await supabase.auth.signOut();
+      return { error: "Une erreur est survenue lors de la création de votre profil. Veuillez réessayer de vous inscrire."};
   }
 
   revalidatePath("/", "layout");

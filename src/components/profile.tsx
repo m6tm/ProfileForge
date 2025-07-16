@@ -17,18 +17,21 @@ export default async function Profile() {
     redirect('/');
   }
 
-  const { data: profileData } = await supabase
+  const { data: profileData, error } = await supabase
     .from('Profile')
     .select('*')
     .eq('userId', user.id)
     .single();
 
-  if (!profileData) {
-    // This could happen if profile creation failed after sign-up.
-    // Redirect to home page. The session is still active, but they will be prompted to handle their profile.
-    // For now, redirecting to the root is a safe action.
-    redirect('/'); 
+  if (error || !profileData) {
+     console.error("Erreur lors de la récupération du profil ou profil non trouvé:", error);
+     // This could happen if profile creation failed after sign-up.
+     // In this case, we sign out the user to allow them to try signing up again.
+     // This prevents the login/logout loop.
+     await logout();
+     return null; // The logout function will handle the redirect.
   }
+
 
   const initialProfileData = {
     fullName: profileData.fullName,
