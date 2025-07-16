@@ -3,7 +3,7 @@ import { z } from "zod";
 export const profileFormSchema = z.object({
   fullName: z.string().min(2, { message: "Le nom complet doit comporter au moins 2 caractères." }),
   email: z.string().email(),
-  phoneNumber: z.string().min(10, { message: "Le numéro de téléphone doit comporter au moins 10 chiffres." }),
+  phoneNumber: z.string().min(9, { message: "Le numéro de téléphone doit comporter au moins 9 chiffres." }),
   bio: z.string().max(160, { message: "La biographie ne doit pas dépasser 160 caractères." }).optional().or(z.literal('')),
   website: z.string().url({ message: "Veuillez saisir une URL valide." }).optional().or(z.literal('')),
   preferences: z.object({
