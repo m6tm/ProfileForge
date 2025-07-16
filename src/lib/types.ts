@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { UserRole } from "@prisma/client";
 
 export const profileFormSchema = z.object({
   fullName: z.string().min(2, { message: "Le nom complet doit comporter au moins 2 caractères." }),
@@ -13,3 +14,22 @@ export const profileFormSchema = z.object({
 });
 
 export type UserProfile = z.infer<typeof profileFormSchema>;
+
+// Schema for updating a user from the admin panel
+export const adminUserUpdateSchema = z.object({
+  id: z.string().optional(),
+  fullName: z.string().min(2, { message: "Le nom complet est requis." }),
+  phoneNumber: z.string().min(9, { message: "Le numéro de téléphone est requis." }),
+  balance: z.number().int().min(0, { message: "Le solde doit être un nombre positif." }),
+  role: z.nativeEnum(UserRole),
+});
+
+export type AdminUserUpdate = z.infer<typeof adminUserUpdateSchema>;
+
+// Schema for creating a user from the admin panel
+export const adminUserCreateSchema = adminUserUpdateSchema.extend({
+  email: z.string().email({ message: "Veuillez saisir une adresse e-mail valide." }),
+  password: z.string().min(6, { message: "Le mot de passe doit comporter au moins 6 caractères." }),
+});
+
+export type AdminUserCreate = z.infer<typeof adminUserCreateSchema>;

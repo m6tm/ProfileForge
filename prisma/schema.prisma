@@ -11,27 +11,34 @@ datasource db {
   schemas   = ["public"]
 }
 
+enum UserRole {
+  CLIENT
+  ADMIN
+}
+
 model Profile {
-  id          String        @id @default(cuid())
-  userId      String        @unique
-  email       String        @unique
+  id          String      @id @default(cuid())
+  userId      String      @unique
+  email       String      @unique
   fullName    String?
   phoneNumber String?
   bio         String?
   website     String?
-  newsletter  Boolean       @default(false)
-  marketing   Boolean       @default(false)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  balance     Int           @default(0)
+  newsletter  Boolean     @default(false)
+  marketing   Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  balance     Int         @default(0)
+  role        UserRole    @default(CLIENT)
   gameHistory GameHistory[]
 
+  @@map("profiles")
   @@schema("public")
 }
 
 model GameHistory {
   id            String   @id @default(cuid())
-  profile       Profile  @relation(fields: [profileId], references: [id])
+  profile       Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId     String
   result        String // "win" or "loss"
   number        Int
@@ -39,5 +46,6 @@ model GameHistory {
   createdAt     DateTime @default(now())
 
   @@index([profileId])
+  @@map("game_histories")
   @@schema("public")
 }

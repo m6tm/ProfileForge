@@ -5,22 +5,39 @@ import { createClient } from '@/lib/supabase/server';
 
 export async function middleware(request: NextRequest) {
   const res = await updateSession(request);
-  const isDashboard = request.nextUrl.pathname.startsWith('/profile');
+  const isProfile = request.nextUrl.pathname.startsWith('/profile');
+  const isAdminPath = request.nextUrl.pathname.startsWith('/admin');
   const isHome = request.nextUrl.pathname === '/';
   const isApi = request.nextUrl.pathname.startsWith('/api/');
+  
   const supabase = await createClient();
-  const { data } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser();
 
   if (isApi) {
     return NextResponse.next();
   }
 
-  if (!data.user && isDashboard) {
+  // If not logged in, redirect to home from protected routes
+  if (!user && (isProfile || isAdminPath)) {
     return NextResponse.redirect(new URL('/', request.url));
   }
-
-  if (data.user && isHome) {
+  
+  // If logged in and on the home page, redirect to profile
+  if (user && isHome) {
     return NextResponse.redirect(new URL('/profile', request.url));
+  }
+
+  // Admin route protection
+  if (user && isAdminPath) {
+    const prisma = (await import('@/lib/prisma')).getPrisma();
+    const profile = await prisma.profile.findUnique({
+      where: { userId: user.id },
+      select: { role: true },
+    });
+
+    if (profile?.role !== 'ADMIN') {
+      return NextResponse.redirect(new URL('/profile', request.url));
+    }
   }
 
   return res;
