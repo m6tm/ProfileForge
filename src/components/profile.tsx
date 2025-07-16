@@ -1,11 +1,12 @@
 import { ProfileForm } from '@/components/profile-form';
 import { Button } from '@/components/ui/button';
 import { createClient } from '@/lib/supabase/server';
-import { LogOut, Rocket } from 'lucide-react';
+import { LogOut, Rocket, Gamepad2 } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { logout } from '@/app/auth/actions';
 import { getPrisma } from '@/lib/prisma';
 import type { UserProfile } from '@/lib/types';
+import Link from 'next/link';
 
 export default async function Profile() {
   const supabase = await createClient();
@@ -48,12 +49,20 @@ export default async function Profile() {
           <Rocket className="w-8 h-8 text-primary" />
           <h1 className="text-2xl font-bold font-headline">ProfileForge</h1>
         </div>
-        <form action={logout}>
-          <Button variant="ghost" type="submit">
-            <LogOut className="mr-2 h-4 w-4" />
-            Déconnexion
+        <div className="flex items-center gap-2">
+          <Button variant="outline" asChild>
+            <Link href="/game">
+              <Gamepad2 className="mr-2 h-4 w-4" />
+              Jouer
+            </Link>
           </Button>
-        </form>
+          <form action={logout}>
+            <Button variant="ghost" type="submit">
+              <LogOut className="mr-2 h-4 w-4" />
+              Déconnexion
+            </Button>
+          </form>
+        </div>
       </header>
       <div className="grid grid-cols-1 gap-8 items-start">
         <div className="lg:col-span-2">

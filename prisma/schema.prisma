@@ -2,30 +2,42 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider        = "prisma-client-js"
-}
-
-generator "prisma-client-py" {
-  provider = "prisma-client-py"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model Profile {
-  id            String   @id @default(cuid())
-  userId        String   @unique
-  email         String   @unique
-  fullName      String
-  phoneNumber   String
-  bio           String?
-  website       String?
-  newsletter    Boolean  @default(false)
-  marketing     Boolean  @default(false)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id          String        @id @default(cuid())
+  userId      String        @unique
+  email       String        @unique
+  fullName    String?
+  phoneNumber String?
+  bio         String?
+  website     String?
+  newsletter  Boolean       @default(false)
+  marketing   Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  balance     Int           @default(0)
+  gameHistory GameHistory[]
 
   @@map("profiles")
+}
+
+model GameHistory {
+  id            String   @id @default(cuid())
+  profile       Profile  @relation(fields: [profileId], references: [id])
+  profileId     String
+  result        String // "win" or "loss"
+  number        Int
+  balanceChange Int
+  createdAt     DateTime @default(now())
+
+  @@index([profileId])
+  @@map("game_histories")
 }
