@@ -5,6 +5,7 @@ import { LogOut, Rocket } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { logout } from '@/app/auth/actions';
 import { getPrisma } from '@/lib/prisma';
+import type { UserProfile } from '@/lib/types';
 
 export default async function Profile() {
   const supabase = await createClient();
@@ -28,7 +29,7 @@ export default async function Profile() {
     redirect('/');
   }
 
-  const initialProfileData = {
+  const initialProfileData: UserProfile = {
     fullName: profileData.fullName,
     email: profileData.email,
     phoneNumber: profileData.phoneNumber,
