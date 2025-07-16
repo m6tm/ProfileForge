@@ -1,26 +1,29 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["multiSchema"]
+}
 
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
-}
-
-generator client {
-  provider        = "prisma-client-js"
+  schemas   = ["public"]
 }
 
 model Profile {
-  id          String    @id @default(cuid())
-  userId      String    @unique
-  email       String    @unique
-  fullName    String?
-  phoneNumber String
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  fullName    String
+  email       String   @unique
   bio         String?
   website     String?
-  newsletter  Boolean   @default(false)
-  marketing   Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  phoneNumber String
+  newsletter  Boolean  @default(false)
+  marketing   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("profiles")
+  @@schema("public")
 }
