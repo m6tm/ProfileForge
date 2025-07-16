@@ -1,4 +1,3 @@
-import { AiFeatures } from '@/components/ai-features';
 import { ProfileForm } from '@/components/profile-form';
 import { Button } from '@/components/ui/button';
 import { createServerClient } from '@/lib/supabase/server';
@@ -25,11 +24,7 @@ export default async function Profile() {
 
   if (error || !profileData) {
      console.error("Erreur lors de la récupération du profil ou profil non trouvé:", error);
-     // This could happen if profile creation failed after sign-up.
-     // In this case, we sign out the user to allow them to try signing up again.
-     // This prevents the login/logout loop.
-     await logout();
-     return null; // The logout function will handle the redirect.
+     redirect('/');
   }
 
 
@@ -45,7 +40,7 @@ export default async function Profile() {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto p-4 space-y-8 animate-in fade-in duration-500">
+    <div className="w-full max-w-4xl mx-auto p-4 space-y-8 animate-in fade-in duration-500">
       <header className="flex items-center justify-between py-4 border-b">
         <div className="flex items-center gap-2">
           <Rocket className="w-8 h-8 text-primary" />
@@ -58,12 +53,9 @@ export default async function Profile() {
           </Button>
         </form>
       </header>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+      <div className="grid grid-cols-1 gap-8 items-start">
         <div className="lg:col-span-2">
           <ProfileForm initialData={initialProfileData} />
-        </div>
-        <div className="lg:col-span-1">
-          <AiFeatures profileData={initialProfileData} />
         </div>
       </div>
     </div>

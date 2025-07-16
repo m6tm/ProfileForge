@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata: Metadata = {
   title: 'ProfileForge',
-  description: 'Gérez votre profil utilisateur avec une assistance optimisée par l\'IA.',
+  description: 'Gérez votre profil utilisateur.',
 };
 
 export default function RootLayout({

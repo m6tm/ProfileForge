@@ -1,11 +1,14 @@
 generator client {
   provider = "prisma-client-js"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
+  schemas   = ["public"]
 }
 
 model Profile {
@@ -19,4 +22,6 @@ model Profile {
   marketing  Boolean  @default(false)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+
+  @@schemas("public")
 }

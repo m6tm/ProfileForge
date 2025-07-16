@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -38,7 +38,6 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
           title: "Succès !",
           description: result.message,
         });
-        // Refresh the page to show the updated data
         router.refresh();
       } else {
         toast({
