@@ -115,6 +115,11 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   const adminCheck = await checkAdmin(request);
   if (adminCheck.error) return adminCheck.error;
+  
+  // Make sure adminClient is available
+  if (!adminCheck.adminClient) {
+    return NextResponse.json({ error: 'Client admin non initialisé.' }, { status: 500 });
+  }
 
   const { id } = params;
   const prisma = getPrisma();
@@ -131,7 +136,13 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     }
 
     const { adminClient } = adminCheck;
-    await adminClient.auth.admin.deleteUser(userToDelete.userId);
+    const { error: deleteAuthUserError } = await adminClient.auth.admin.deleteUser(userToDelete.userId);
+
+    // Continue even if user is not in auth, but log it
+    if (deleteAuthUserError && deleteAuthUserError.message !== 'User not found') {
+        console.error('Erreur de suppression de l\'utilisateur Supabase Auth:', deleteAuthUserError);
+        return NextResponse.json({ error: 'Erreur lors de la suppression de l\'authentification de l\'utilisateur.' }, { status: 500 });
+    }
 
     await prisma.profile.delete({ where: { id } });
 
