@@ -62,9 +62,21 @@ export async function GET(request: NextRequest) {
   const adminCheck = await checkAdmin(request);
   if (adminCheck.error) return adminCheck.error;
 
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: 'Utilisateur non authentifié.' }, { status: 401 });
+  }
+
   const prisma = getPrisma();
   try {
     const users = await prisma.profile.findMany({
+      where: {
+        NOT: {
+          userId: user.id,
+        }
+      },
       orderBy: {
         createdAt: 'desc',
       },
