@@ -1,6 +1,7 @@
 // src/components/admin/user-dialog.tsx
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -9,9 +10,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { type AdminUserUpdate, adminUserCreateSchema, adminUserUpdateSchema } from "@/lib/types";
+import { type AdminUserUpdate, adminUserCreateSchema, adminUserUpdateSchema, UserRole } from "@/lib/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { UserRole, type Profile } from '@/generated/prisma';
+import type { Profile } from '@/generated/prisma';
 
 interface UserDialogProps {
     isOpen: boolean;
@@ -52,13 +53,7 @@ export function UserDialog({ isOpen, setIsOpen, user }: UserDialogProps) {
 
     const form = useForm<AdminUserUpdate>({
         resolver: zodResolver(isEditMode ? adminUserUpdateSchema : adminUserCreateSchema),
-        defaultValues: isEditMode ? {
-            id: user?.id,
-            fullName: user?.fullName || '',
-            phoneNumber: user?.phoneNumber || '',
-            balance: user?.balance || 0,
-            role: user?.role || UserRole.CLIENT,
-        } : {
+        defaultValues: {
             email: '',
             password: '',
             fullName: '',
@@ -67,6 +62,29 @@ export function UserDialog({ isOpen, setIsOpen, user }: UserDialogProps) {
             role: UserRole.CLIENT,
         },
     });
+
+    useEffect(() => {
+        if (isOpen) {
+            if (isEditMode && user) {
+                form.reset({
+                    id: user.id,
+                    fullName: user.fullName || '',
+                    phoneNumber: user.phoneNumber || '',
+                    balance: user.balance || 0,
+                    role: user.role || UserRole.CLIENT,
+                });
+            } else {
+                form.reset({
+                    email: '',
+                    password: '',
+                    fullName: '',
+                    phoneNumber: '',
+                    balance: 0,
+                    role: UserRole.CLIENT,
+                });
+            }
+        }
+    }, [isOpen, isEditMode, user, form]);
 
     const mutation = useMutation({
         mutationFn: isEditMode ? updateUser : createUser,
@@ -149,7 +167,7 @@ export function UserDialog({ isOpen, setIsOpen, user }: UserDialogProps) {
                                     <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Sélectionner un rôle" />
-                                        </SelectTrigger>
+                                        </Trigger>
                                     </FormControl>
                                     <SelectContent>
                                         <SelectItem value={UserRole.CLIENT}>CLIENT</SelectItem>
