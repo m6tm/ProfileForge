@@ -10,9 +10,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { type AdminUserUpdate, adminUserCreateSchema, adminUserUpdateSchema, UserRole } from "@/lib/types";
+import { type AdminUserUpdate, adminUserCreateSchema, adminUserUpdateSchema } from "@/lib/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import type { Profile } from '@prisma/client';
+import { Profile, UserRole } from '@/generated/prisma';
 
 interface UserDialogProps {
     isOpen: boolean;
@@ -122,22 +122,22 @@ export function UserDialog({ isOpen, setIsOpen, user }: UserDialogProps) {
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         {!isEditMode && (
-                             <>
+                            <>
                                 <FormField control={form.control} name="email" render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Email</FormLabel>
                                         <FormControl><Input {...field} /></FormControl>
                                         <FormMessage />
                                     </FormItem>
-                                )}/>
+                                )} />
                                 <FormField control={form.control} name="password" render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Mot de passe</FormLabel>
                                         <FormControl><Input type="password" {...field} /></FormControl>
                                         <FormMessage />
                                     </FormItem>
-                                )}/>
-                             </>
+                                )} />
+                            </>
                         )}
                         <FormField control={form.control} name="fullName" render={({ field }) => (
                             <FormItem>
@@ -145,21 +145,21 @@ export function UserDialog({ isOpen, setIsOpen, user }: UserDialogProps) {
                                 <FormControl><Input {...field} /></FormControl>
                                 <FormMessage />
                             </FormItem>
-                        )}/>
+                        )} />
                         <FormField control={form.control} name="phoneNumber" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Numéro de téléphone</FormLabel>
                                 <FormControl><Input {...field} /></FormControl>
                                 <FormMessage />
                             </FormItem>
-                        )}/>
+                        )} />
                         <FormField control={form.control} name="balance" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Solde</FormLabel>
                                 <FormControl><Input type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value, 10) || 0)} /></FormControl>
                                 <FormMessage />
                             </FormItem>
-                        )}/>
+                        )} />
                         <FormField control={form.control} name="role" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Rôle</FormLabel>
@@ -167,7 +167,7 @@ export function UserDialog({ isOpen, setIsOpen, user }: UserDialogProps) {
                                     <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Sélectionner un rôle" />
-                                        </Trigger>
+                                        </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
                                         <SelectItem value={UserRole.CLIENT}>CLIENT</SelectItem>
@@ -176,14 +176,14 @@ export function UserDialog({ isOpen, setIsOpen, user }: UserDialogProps) {
                                 </Select>
                                 <FormMessage />
                             </FormItem>
-                        )}/>
-                        <DialogFooter>
-                            <Button type="button" variant="ghost" onClick={() => setIsOpen(false)}>Annuler</Button>
-                            <Button type="submit" disabled={mutation.isPending}>
-                                {mutation.isPending ? 'Enregistrement...' : 'Enregistrer'}
-                            </Button>
-                        </DialogFooter>
+                        )} />
                     </form>
+                    <DialogFooter>
+                        <Button type="button" variant="ghost" onClick={() => setIsOpen(false)}>Annuler</Button>
+                        <Button type="submit" disabled={mutation.isPending}>
+                            {mutation.isPending ? 'Enregistrement...' : 'Enregistrer'}
+                        </Button>
+                    </DialogFooter>
                 </Form>
             </DialogContent>
         </Dialog>
