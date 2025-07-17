@@ -10,7 +10,7 @@ export async function middleware(request: NextRequest) {
   const isGamePath = request.nextUrl.pathname.startsWith('/game');
   const isHome = request.nextUrl.pathname === '/';
   const isApi = request.nextUrl.pathname.startsWith('/api/');
-  
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -22,7 +22,7 @@ export async function middleware(request: NextRequest) {
   if (!user && (isProfile || isAdminPath || isGamePath)) {
     return NextResponse.redirect(new URL('/', request.url));
   }
-  
+
   // If logged in and on the home page, redirect to profile
   if (user && isHome) {
     return NextResponse.redirect(new URL('/profile', request.url));
