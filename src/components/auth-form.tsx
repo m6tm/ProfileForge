@@ -43,7 +43,7 @@ export default function AuthForm() {
     <div className="flex flex-col items-center space-y-4">
       <div className="flex items-center gap-2 text-2xl font-bold font-headline">
         <Rocket className="w-8 h-8 text-primary" />
-        <h1>ProfileForge</h1>
+        <h1>TrueNumber</h1>
       </div>
       {showVerificationMessage ? (
         <Card className="w-[400px]">
@@ -89,12 +89,12 @@ export default function AuthForm() {
             <Card>
               <CardHeader>
                 <CardTitle>Créer un compte</CardTitle>
-                <CardDescription>Rejoignez ProfileForge pour gérer votre profil.</CardDescription>
+                <CardDescription>Rejoignez TrueNumber pour gérer votre profil.</CardDescription>
               </CardHeader>
               <CardContent>
                 <form action={handleAuthAction}>
                   <div className="space-y-4">
-                     <div className="space-y-2">
+                    <div className="space-y-2">
                       <Label htmlFor="register-fullName">Nom complet</Label>
                       <Input id="register-fullName" name="fullName" type="text" placeholder="Alex Dubois" required disabled={isPending} />
                     </div>
@@ -102,7 +102,7 @@ export default function AuthForm() {
                       <Label htmlFor="register-email">Email</Label>
                       <Input id="register-email" name="email" type="email" placeholder="m@exemple.com" required disabled={isPending} />
                     </div>
-                     <div className="space-y-2">
+                    <div className="space-y-2">
                       <Label htmlFor="register-phoneNumber">Numéro de téléphone</Label>
                       <Input id="register-phoneNumber" name="phoneNumber" type="tel" placeholder="0612345678" required disabled={isPending} />
                     </div>

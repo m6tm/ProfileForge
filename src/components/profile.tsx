@@ -52,16 +52,16 @@ export default async function Profile() {
       <header className="flex items-center justify-between py-4 border-b">
         <div className="flex items-center gap-2">
           <Rocket className="w-8 h-8 text-primary" />
-          <h1 className="text-2xl font-bold font-headline">ProfileForge</h1>
+          <h1 className="text-2xl font-bold font-headline">TrueNumber</h1>
         </div>
         <div className="flex items-center gap-2">
           {isAdmin && (
-             <Button variant="outline" asChild>
-                <Link href="/admin">
-                  <ShieldCheck className="mr-2 h-4 w-4" />
-                  Admin
-                </Link>
-             </Button>
+            <Button variant="outline" asChild>
+              <Link href="/admin">
+                <ShieldCheck className="mr-2 h-4 w-4" />
+                Admin
+              </Link>
+            </Button>
           )}
           <Button variant="outline" asChild>
             <Link href="/game">

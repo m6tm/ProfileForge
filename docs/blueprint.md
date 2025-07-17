@@ -1,4 +1,4 @@
-# **App Name**: ProfileForge
+# **App Name**: TrueNumber
 
 ## Core Features:
 
