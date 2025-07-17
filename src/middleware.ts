@@ -7,6 +7,7 @@ export async function middleware(request: NextRequest) {
   const res = await updateSession(request);
   const isProfile = request.nextUrl.pathname.startsWith('/profile');
   const isAdminPath = request.nextUrl.pathname.startsWith('/admin');
+  const isGamePath = request.nextUrl.pathname.startsWith('/game');
   const isHome = request.nextUrl.pathname === '/';
   const isApi = request.nextUrl.pathname.startsWith('/api/');
   
@@ -18,26 +19,13 @@ export async function middleware(request: NextRequest) {
   }
 
   // If not logged in, redirect to home from protected routes
-  if (!user && (isProfile || isAdminPath)) {
+  if (!user && (isProfile || isAdminPath || isGamePath)) {
     return NextResponse.redirect(new URL('/', request.url));
   }
   
   // If logged in and on the home page, redirect to profile
   if (user && isHome) {
     return NextResponse.redirect(new URL('/profile', request.url));
-  }
-
-  // Admin route protection
-  if (user && isAdminPath) {
-    const { data: profile, error } = await supabase
-    .from('profile')
-    .select('role')
-    .eq('userId', user.id)
-    .single();
-
-    if (profile?.role !== 'ADMIN') {
-      return NextResponse.redirect(new URL('/profile', request.url));
-    }
   }
 
   return res;
