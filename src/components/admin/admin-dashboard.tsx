@@ -14,10 +14,22 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import type { Profile } from "@prisma/client";
 import { format } from "date-fns";
 
-async function fetchUsers(): Promise<Profile[]> {
+// The Profile type here will have `createdAt` as a string because we format it on the server
+type UserForDataTable = Omit<Profile, 'createdAt' | 'updatedAt'> & {
+    createdAt: string;
+    updatedAt: string;
+};
+
+
+async function fetchUsers(): Promise<UserForDataTable[]> {
     const res = await fetch('/api/admin/users');
     if (!res.ok) throw new Error("Impossible de récupérer les utilisateurs");
-    return res.json();
+    const usersData = await res.json();
+    // Also format here for client-side fetches
+    return usersData.map((user: Profile) => ({
+        ...user,
+        createdAt: format(new Date(user.createdAt), "dd/MM/yyyy"),
+    }));
 }
 
 async function deleteUser(userId: string) {
@@ -30,7 +42,7 @@ async function deleteUser(userId: string) {
 }
 
 interface AdminDashboardProps {
-    initialUsers: Profile[];
+    initialUsers: UserForDataTable[];
 }
 
 export default function AdminDashboard({ initialUsers }: AdminDashboardProps) {
@@ -38,7 +50,7 @@ export default function AdminDashboard({ initialUsers }: AdminDashboardProps) {
     const [isUserDialogOpen, setIsUserDialogOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<Profile | null>(null);
 
-    const { data: users = initialUsers } = useQuery<Profile[]>({
+    const { data: users = initialUsers } = useQuery<UserForDataTable[]>({
         queryKey: ['users'],
         queryFn: fetchUsers,
         initialData: initialUsers,
@@ -66,7 +78,7 @@ export default function AdminDashboard({ initialUsers }: AdminDashboardProps) {
         setIsUserDialogOpen(true);
     };
 
-    const columns: ColumnDef<Profile>[] = useMemo(() => [
+    const columns: ColumnDef<UserForDataTable>[] = useMemo(() => [
         { accessorKey: "fullName", header: "Nom complet" },
         { accessorKey: "email", header: "Email" },
         { accessorKey: "role", header: "Rôle" },
@@ -74,7 +86,6 @@ export default function AdminDashboard({ initialUsers }: AdminDashboardProps) {
         { 
             accessorKey: "createdAt", 
             header: "Créé le",
-            cell: ({ row }) => format(new Date(row.original.createdAt), "dd/MM/yyyy")
         },
         {
             id: "actions",
@@ -91,7 +102,7 @@ export default function AdminDashboard({ initialUsers }: AdminDashboardProps) {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuItem onClick={() => handleEdit(user)}>
+                                <DropdownMenuItem onClick={() => handleEdit(user as unknown as Profile)}>
                                     Modifier
                                 </DropdownMenuItem>
                                 <AlertDialogTrigger asChild>

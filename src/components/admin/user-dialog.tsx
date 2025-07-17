@@ -4,14 +4,14 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { type Profile } from "@prisma/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { type AdminUserUpdate, adminUserCreateSchema, adminUserUpdateSchema, UserRole } from "@/lib/types";
+import { type AdminUserUpdate, adminUserCreateSchema, adminUserUpdateSchema } from "@/lib/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { UserRole, type Profile } from '@/generated/prisma';
 
 interface UserDialogProps {
     isOpen: boolean;

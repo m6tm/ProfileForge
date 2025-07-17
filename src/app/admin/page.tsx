@@ -2,6 +2,7 @@ import AdminDashboard from "@/components/admin/admin-dashboard";
 import { getPrisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { format } from "date-fns";
 
 export default async function AdminPage() {
     const supabase = await createClient();
@@ -23,11 +24,18 @@ export default async function AdminPage() {
         redirect('/profile');
     }
 
-    const users = await prisma.profile.findMany({
+    const usersData = await prisma.profile.findMany({
         orderBy: {
             createdAt: 'desc',
         },
     });
+
+    // Format the date on the server to prevent hydration mismatch
+    const users = usersData.map(user => ({
+        ...user,
+        createdAt: format(new Date(user.createdAt), "dd/MM/yyyy"),
+    }));
+
 
     return <AdminDashboard initialUsers={users} />;
 }
