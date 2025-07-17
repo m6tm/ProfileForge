@@ -57,7 +57,23 @@ async function checkAdmin(request: NextRequest) {
   return { user, adminClient };
 }
 
-// GET all users
+/**
+ * @swagger
+ * /admin/users:
+ *   get:
+ *     tags:
+ *       - Admin
+ *     summary: Get all users
+ *     responses:
+ *       200:
+ *         description: List of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ */
 export async function GET(request: NextRequest) {
   const adminCheck = await checkAdmin(request);
   if (adminCheck.error) return adminCheck.error;
@@ -88,7 +104,27 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// CREATE a new user
+/**
+ * @swagger
+ * /admin/users:
+ *   post:
+ *     tags:
+ *       - Admin
+ *     summary: Create a new user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       201:
+ *         description: User created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ */
 export async function POST(request: NextRequest) {
   const adminCheck = await checkAdmin(request);
   if (adminCheck.error) return adminCheck.error;
