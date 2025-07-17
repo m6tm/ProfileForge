@@ -5,6 +5,8 @@ import { getPrisma } from '@/lib/prisma';
 import { createClient } from '@/lib/supabase/server';
 import { adminUserUpdateSchema } from '@/lib/types';
 import { NextResponse, type NextRequest } from 'next/server';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 
 // Middleware to check for admin role
 async function checkAdmin(request: NextRequest) {
@@ -22,7 +24,38 @@ async function checkAdmin(request: NextRequest) {
         return { error: NextResponse.json({ error: 'Accès non autorisé.' }, { status: 403 }) };
     }
 
-    return { user, profile };
+    // Create an admin client for protected operations
+    const cookieStore = await cookies();
+    const adminClient = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!,
+        {
+          cookies: {
+            getAll() {
+              return cookieStore.getAll()
+            },
+            setAll(cookiesToSet) {
+              try {
+                cookiesToSet.forEach(({ name, value, options }) =>
+                  request.cookies.set(name, value)
+                )
+                cookiesToSet.forEach(({ name, value, options }) => {
+                  request.cookies.set(name, value);
+                  if (options) {
+                    cookieStore.set(name, value, options);
+                  }
+                });
+              } catch {
+                // The `setAll` method was called from a Server Component.
+                // This can be ignored if you have middleware refreshing
+                // user sessions.
+              }
+            },
+          },
+        }
+    );
+
+    return { user, profile, adminClient };
 }
 
 // UPDATE a user
@@ -76,9 +109,9 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
         if (userToDelete.userId === adminCheck.user?.id) {
              return NextResponse.json({ error: 'Vous ne pouvez pas supprimer votre propre compte admin.' }, { status: 400 });
         }
-
-        const adminAuthClient = (await createClient()).auth.admin;
-        await adminAuthClient.deleteUser(userToDelete.userId);
+        
+        const { adminClient } = adminCheck;
+        await adminClient.auth.admin.deleteUser(userToDelete.userId);
 
         await prisma.profile.delete({ where: { id } });
 
@@ -87,8 +120,13 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
         console.error('Erreur de suppression d\'utilisateur:', error);
         // If user is already deleted from Supabase auth but not from DB
         if (error.code === 'P2025' || (error.message && error.message.includes("User not found"))) {
-            await prisma.profile.delete({ where: { id } });
-            return NextResponse.json({ message: 'Utilisateur supprimé avec succès (nettoyage).' });
+            try {
+                await prisma.profile.delete({ where: { id } });
+                return NextResponse.json({ message: 'Utilisateur supprimé avec succès (nettoyage).' });
+            } catch (cleanupError) {
+                 console.error('Erreur de nettoyage du profil:', cleanupError);
+                 return NextResponse.json({ error: 'Erreur lors du nettoyage du profil.' }, { status: 500 });
+            }
         }
         return NextResponse.json({ error: 'Erreur lors de la suppression de l\'utilisateur.' }, { status: 500 });
     }

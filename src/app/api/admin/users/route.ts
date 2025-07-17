@@ -5,6 +5,8 @@ import { getPrisma } from '@/lib/prisma';
 import { createClient } from '@/lib/supabase/server';
 import { adminUserCreateSchema } from '@/lib/types';
 import { NextResponse, type NextRequest } from 'next/server';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 
 // Middleware to check for admin role
 async function checkAdmin(request: NextRequest) {
@@ -22,7 +24,37 @@ async function checkAdmin(request: NextRequest) {
         return { error: NextResponse.json({ error: 'Accès non autorisé.' }, { status: 403 }) };
     }
 
-    return { user };
+    const cookieStore = await cookies();
+    const adminClient = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!,
+        {
+          cookies: {
+            getAll() {
+              return cookieStore.getAll()
+            },
+            setAll(cookiesToSet) {
+              try {
+                cookiesToSet.forEach(({ name, value, options }) =>
+                  request.cookies.set(name, value)
+                )
+                cookiesToSet.forEach(({ name, value, options }) => {
+                  request.cookies.set(name, value);
+                  if (options) {
+                    cookieStore.set(name, value, options);
+                  }
+                });
+              } catch {
+                // The `setAll` method was called from a Server Component.
+                // This can be ignored if you have middleware refreshing
+                // user sessions.
+              }
+            },
+          },
+        }
+      );
+
+    return { user, adminClient };
 }
 
 // GET all users
@@ -57,7 +89,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { email, password, fullName, phoneNumber, role, balance } = validatedFields.data;
-    const supabaseAdmin = (await createClient()).auth.admin;
+    const { adminClient } = adminCheck;
     const prisma = getPrisma();
 
     try {
@@ -69,7 +101,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Un utilisateur avec cet email existe déjà.' }, { status: 409 });
         }
 
-        const { data: { user }, error: authError } = await supabaseAdmin.createUser({
+        const { data: { user }, error: authError } = await adminClient.auth.admin.createUser({
             email,
             password,
             email_confirm: true, // Auto-confirm email for admin-created users
