@@ -29,11 +29,11 @@ export async function middleware(request: NextRequest) {
 
   // Admin route protection
   if (user && isAdminPath) {
-    const prisma = (await import('@/lib/prisma')).getPrisma();
-    const profile = await prisma.profile.findUnique({
-      where: { userId: user.id },
-      select: { role: true },
-    });
+    const { data: profile, error } = await supabase
+    .from('profile')
+    .select('role')
+    .eq('userId', user.id)
+    .single();
 
     if (profile?.role !== 'ADMIN') {
       return NextResponse.redirect(new URL('/profile', request.url));
