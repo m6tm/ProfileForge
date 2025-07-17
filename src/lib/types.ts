@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { UserRole } from "@prisma/client";
+
+// Define the enum directly in this file
+export enum UserRole {
+  CLIENT = "CLIENT",
+  ADMIN = "ADMIN",
+}
 
 export const profileFormSchema = z.object({
   fullName: z.string().min(2, { message: "Le nom complet doit comporter au moins 2 caractères." }),
@@ -33,5 +38,3 @@ export const adminUserCreateSchema = adminUserUpdateSchema.extend({
 });
 
 export type AdminUserCreate = z.infer<typeof adminUserCreateSchema>;
-
-export { UserRole };
