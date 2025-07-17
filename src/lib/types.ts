@@ -33,3 +33,5 @@ export const adminUserCreateSchema = adminUserUpdateSchema.extend({
 });
 
 export type AdminUserCreate = z.infer<typeof adminUserCreateSchema>;
+
+export { UserRole };
