@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { type AdminUserUpdate, adminUserCreateSchema, adminUserUpdateSchema, UserRole } from "@/lib/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import type { Profile } from '@/generated/prisma';
+import type { Profile } from '@prisma/client';
 
 interface UserDialogProps {
     isOpen: boolean;
