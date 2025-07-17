@@ -10,7 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { type AdminUserUpdate, adminUserCreateSchema, adminUserUpdateSchema } from "@/lib/types";
+import { type AdminUserCreate, type AdminUserUpdate, adminUserCreateSchema, adminUserUpdateSchema } from "@/lib/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Profile, UserRole } from "@/generated/prisma";
 
@@ -20,7 +20,9 @@ interface UserDialogProps {
     user: Profile | null;
 }
 
-async function createUser(data: AdminUserUpdate) {
+type FormData = AdminUserCreate | AdminUserUpdate;
+
+async function createUser(data: AdminUserCreate) {
     const response = await fetch('/api/admin/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -51,7 +53,7 @@ export function UserDialog({ isOpen, setIsOpen, user }: UserDialogProps) {
     const queryClient = useQueryClient();
     const isEditMode = user !== null;
 
-    const form = useForm<AdminUserUpdate>({
+    const form = useForm<FormData>({
         resolver: zodResolver(isEditMode ? adminUserUpdateSchema : adminUserCreateSchema),
         defaultValues: {
             email: '',
@@ -72,6 +74,8 @@ export function UserDialog({ isOpen, setIsOpen, user }: UserDialogProps) {
                     phoneNumber: user.phoneNumber || '',
                     balance: user.balance || 0,
                     role: user.role || UserRole.CLIENT,
+                    // email and password are not part of the update form, so they can be empty or omitted
+                    email: user.email || '', 
                 });
             } else {
                 form.reset({
@@ -86,8 +90,12 @@ export function UserDialog({ isOpen, setIsOpen, user }: UserDialogProps) {
         }
     }, [isOpen, isEditMode, user, form]);
 
+    const mutationFn = (data: FormData) => {
+        return isEditMode ? updateUser(data as AdminUserUpdate) : createUser(data as AdminUserCreate);
+    };
+
     const mutation = useMutation({
-        mutationFn: isEditMode ? updateUser : createUser,
+        mutationFn: mutationFn,
         onSuccess: () => {
             toast({
                 title: "Succès !",
@@ -95,7 +103,6 @@ export function UserDialog({ isOpen, setIsOpen, user }: UserDialogProps) {
             });
             queryClient.invalidateQueries({ queryKey: ['users'] });
             setIsOpen(false);
-            form.reset();
         },
         onError: (error: Error) => {
             toast({
@@ -106,7 +113,7 @@ export function UserDialog({ isOpen, setIsOpen, user }: UserDialogProps) {
         },
     });
 
-    const onSubmit = (data: AdminUserUpdate) => {
+    const onSubmit = (data: FormData) => {
         mutation.mutate(data);
     };
 
@@ -163,7 +170,7 @@ export function UserDialog({ isOpen, setIsOpen, user }: UserDialogProps) {
                         <FormField control={form.control} name="role" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Rôle</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
                                     <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Sélectionner un rôle" />

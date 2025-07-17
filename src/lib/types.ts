@@ -17,23 +17,26 @@ export const profileFormSchema = z.object({
 
 export type UserProfile = z.infer<typeof profileFormSchema>;
 
-// Schema for updating a user from the admin panel
-export const adminUserUpdateSchema = z.object({
+// Base schema for user data from the admin panel
+const adminUserBaseSchema = z.object({
   id: z.string().optional(),
-  email: z.string().email({ message: "Veuillez saisir une adresse e-mail valide." }),
-  password: z.string().min(6, { message: "Le mot de passe doit comporter au moins 6 caractères." }),
   fullName: z.string().min(2, { message: "Le nom complet est requis." }),
   phoneNumber: z.string().min(9, { message: "Le numéro de téléphone est requis." }),
   balance: z.number().int().min(0, { message: "Le solde doit être un nombre positif." }),
   role: z.nativeEnum(UserRole),
 });
 
-export type AdminUserUpdate = z.infer<typeof adminUserUpdateSchema>;
-
-// Schema for creating a user from the admin panel
-export const adminUserCreateSchema = adminUserUpdateSchema.extend({
+// Schema for creating a user, requires email and password
+export const adminUserCreateSchema = adminUserBaseSchema.extend({
   email: z.string().email({ message: "Veuillez saisir une adresse e-mail valide." }),
   password: z.string().min(6, { message: "Le mot de passe doit comporter au moins 6 caractères." }),
 });
 
+// Schema for updating a user, email and password are not editable/required here
+export const adminUserUpdateSchema = adminUserBaseSchema.extend({
+   email: z.string().email({ message: "Veuillez saisir une adresse e-mail valide." }).optional(),
+   password: z.string().min(6, { message: "Le mot de passe doit comporter au moins 6 caractères." }).optional(),
+});
+
 export type AdminUserCreate = z.infer<typeof adminUserCreateSchema>;
+export type AdminUserUpdate = z.infer<typeof adminUserUpdateSchema>;
