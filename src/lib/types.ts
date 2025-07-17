@@ -1,10 +1,7 @@
+import { UserRole as UserRoleEnum } from "@/generated/prisma";
 import { z } from "zod";
 
-// Define the enum directly in this file
-export enum UserRole {
-  CLIENT = "CLIENT",
-  ADMIN = "ADMIN",
-}
+export const UserRole = UserRoleEnum;
 
 export const profileFormSchema = z.object({
   fullName: z.string().min(2, { message: "Le nom complet doit comporter au moins 2 caractères." }),
@@ -23,6 +20,8 @@ export type UserProfile = z.infer<typeof profileFormSchema>;
 // Schema for updating a user from the admin panel
 export const adminUserUpdateSchema = z.object({
   id: z.string().optional(),
+  email: z.string().email({ message: "Veuillez saisir une adresse e-mail valide." }),
+  password: z.string().min(6, { message: "Le mot de passe doit comporter au moins 6 caractères." }),
   fullName: z.string().min(2, { message: "Le nom complet est requis." }),
   phoneNumber: z.string().min(9, { message: "Le numéro de téléphone est requis." }),
   balance: z.number().int().min(0, { message: "Le solde doit être un nombre positif." }),

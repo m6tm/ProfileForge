@@ -11,8 +11,9 @@ import { UserDialog } from "@/components/admin/user-dialog";
 import { toast } from "@/hooks/use-toast";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import type { Profile } from "@prisma/client";
+import type { Profile } from "@/generated/prisma";
 import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 
 // The Profile type here will have `createdAt` as a string because we format it on the server
 type UserForDataTable = Omit<Profile, 'createdAt' | 'updatedAt'> & {
@@ -49,6 +50,7 @@ export default function AdminDashboard({ initialUsers }: AdminDashboardProps) {
     const queryClient = useQueryClient();
     const [isUserDialogOpen, setIsUserDialogOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<Profile | null>(null);
+    const router = useRouter();
 
     const { data: users = initialUsers } = useQuery<UserForDataTable[]>({
         queryKey: ['users'],
@@ -72,10 +74,14 @@ export default function AdminDashboard({ initialUsers }: AdminDashboardProps) {
         setSelectedUser(user);
         setIsUserDialogOpen(true);
     };
-    
+
     const handleAddNew = () => {
         setSelectedUser(null);
         setIsUserDialogOpen(true);
+    };
+
+    const handleProfile = () => {
+        router.push('/profile');
     };
 
     const columns: ColumnDef<UserForDataTable>[] = useMemo(() => [
@@ -83,8 +89,8 @@ export default function AdminDashboard({ initialUsers }: AdminDashboardProps) {
         { accessorKey: "email", header: "Email" },
         { accessorKey: "role", header: "Rôle" },
         { accessorKey: "balance", header: "Solde" },
-        { 
-            accessorKey: "createdAt", 
+        {
+            accessorKey: "createdAt",
             header: "Créé le",
         },
         {
@@ -121,7 +127,7 @@ export default function AdminDashboard({ initialUsers }: AdminDashboardProps) {
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                                 <AlertDialogCancel>Annuler</AlertDialogCancel>
-                                <AlertDialogAction 
+                                <AlertDialogAction
                                     onClick={() => deleteMutation.mutate(user.id)}
                                     className="bg-destructive hover:bg-destructive/90"
                                 >
@@ -139,10 +145,15 @@ export default function AdminDashboard({ initialUsers }: AdminDashboardProps) {
         <div className="container mx-auto py-10">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-3xl font-bold">Tableau de bord Admin</h1>
-                <Button onClick={handleAddNew}>
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Ajouter un utilisateur
-                </Button>
+                <div className="flex items-center gap-2">
+                    <Button onClick={handleProfile} variant="outline">
+                        Profile
+                    </Button>
+                    <Button onClick={handleAddNew} variant="default">
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Ajouter un utilisateur
+                    </Button>
+                </div>
             </div>
             <DataTable columns={columns} data={users} />
             <UserDialog

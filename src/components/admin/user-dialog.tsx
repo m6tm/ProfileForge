@@ -10,9 +10,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { type AdminUserUpdate, adminUserCreateSchema, adminUserUpdateSchema, UserRole } from "@/lib/types";
+import { type AdminUserUpdate, adminUserCreateSchema, adminUserUpdateSchema } from "@/lib/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import type { Profile } from "@prisma/client";
+import { Profile, UserRole } from "@/generated/prisma";
 
 interface UserDialogProps {
     isOpen: boolean;
