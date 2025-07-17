@@ -6,8 +6,8 @@ export const getApiDocs = async () => {
         definition: {
             openapi: "3.0.0",
             info: {
-                title: "Next Swagger API Example",
-                version: "1.0",
+                title: "TruNumber Documantation",
+                version: "1.0.0",
             },
             components: {
                 securitySchemes: {
@@ -17,6 +17,55 @@ export const getApiDocs = async () => {
                         bearerFormat: "JWT",
                     },
                 },
+                schemas: {
+                    User: {
+                        type: "object",
+                        properties: {
+                            id: {
+                                type: "string"
+                            },
+                            email: {
+                                type: "string"
+                            },
+                            role: {
+                                type: "string",
+                                enum: ["USER", "ADMIN"]
+                            },
+                            createdAt: {
+                                type: "string",
+                                format: "date-time"
+                            },
+                            updatedAt: {
+                                type: "string",
+                                format: "date-time"
+                            }
+                        },
+                        required: ["id", "email", "role"]
+                    }
+                },
+            },
+            paths: {
+                "/api/admin/users": {
+                    get: {
+                        tags: ["Admin"],
+                        summary: "Get all users",
+                        responses: {
+                            200: {
+                                description: "List of users",
+                                content: {
+                                    "application/json": {
+                                        schema: {
+                                            type: "array",
+                                            items: {
+                                                $ref: "#/components/schemas/User"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
             security: [],
         },
