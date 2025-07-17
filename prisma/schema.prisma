@@ -5,43 +5,38 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
-  schemas   = ["public"]
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 enum UserRole {
   CLIENT
   ADMIN
-
-  @@schema("public")
 }
 
 model Profile {
-  id          String      @id @default(cuid())
-  userId      String      @unique
-  email       String      @unique
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String        @unique
+  email       String        @unique
   fullName    String?
   phoneNumber String?
   bio         String?
   website     String?
-  newsletter  Boolean     @default(false)
-  marketing   Boolean     @default(false)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  balance     Int         @default(0)
-  role        UserRole    @default(CLIENT)
+  newsletter  Boolean       @default(false)
+  marketing   Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  balance     Int           @default(0)
+  role        UserRole      @default(CLIENT)
   gameHistory GameHistory[]
 
   @@map("profiles")
-  @@schema("public")
 }
 
 model GameHistory {
-  id            String   @id @default(cuid())
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
   profile       Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId     String
+  profileId     String   @db.ObjectId
   result        String // "win" or "loss"
   number        Int
   balanceChange Int
@@ -49,5 +44,4 @@ model GameHistory {
 
   @@index([profileId])
   @@map("game_histories")
-  @@schema("public")
 }
