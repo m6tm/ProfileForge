@@ -177,13 +177,13 @@ export function UserDialog({ isOpen, setIsOpen, user }: UserDialogProps) {
                                 <FormMessage />
                             </FormItem>
                         )} />
+                        <DialogFooter>
+                            <Button type="button" variant="ghost" onClick={() => setIsOpen(false)}>Annuler</Button>
+                            <Button type="submit" disabled={mutation.isPending}>
+                                {mutation.isPending ? 'Enregistrement...' : 'Enregistrer'}
+                            </Button>
+                        </DialogFooter>
                     </form>
-                    <DialogFooter>
-                        <Button type="button" variant="ghost" onClick={() => setIsOpen(false)}>Annuler</Button>
-                        <Button type="submit" disabled={mutation.isPending}>
-                            {mutation.isPending ? 'Enregistrement...' : 'Enregistrer'}
-                        </Button>
-                    </DialogFooter>
                 </Form>
             </DialogContent>
         </Dialog>
