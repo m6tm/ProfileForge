@@ -16,7 +16,7 @@ export const getApiDocs = async () => {
                         type: "http",
                         scheme: "bearer",
                         bearerFormat: "JWT",
-                    },
+                    }
                 },
                 schemas: {
                     User: {
