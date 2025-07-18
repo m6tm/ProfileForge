@@ -24,7 +24,37 @@ async function checkAdmin() {
   return { user };
 }
 
-// GET game history for a user
+/**
+ * @swagger
+ * /api/admin/users/{id}/history:
+ *   get:
+ *     summary: Récupère l'historique des jeux pour un utilisateur spécifique
+ *     tags: [Admin]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: L'ID du profil de l'utilisateur
+ *     responses:
+ *       200:
+ *         description: Une liste d'entrées de l'historique des jeux
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/GameHistory'
+ *       401:
+ *         description: Authentification requise
+ *       403:
+ *         description: Accès non autorisé (l'utilisateur n'est pas un admin)
+ *       500:
+ *         description: Erreur interne du serveur
+ */
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   const adminCheck = await checkAdmin();
   if (adminCheck.error) return adminCheck.error;
