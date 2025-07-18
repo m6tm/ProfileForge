@@ -4,12 +4,13 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { type ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal, PlusCircle } from "lucide-react";
+import { MoreHorizontal, PlusCircle, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/admin/data-table";
 import { UserDialog } from "@/components/admin/user-dialog";
+import { GameHistoryDialog } from "@/components/admin/game-history-dialog";
 import { toast } from "@/hooks/use-toast";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import type { Profile } from "@/generated/prisma";
 import { format } from "date-fns";
@@ -49,6 +50,7 @@ interface AdminDashboardProps {
 export default function AdminDashboard({ initialUsers }: AdminDashboardProps) {
     const queryClient = useQueryClient();
     const [isUserDialogOpen, setIsUserDialogOpen] = useState(false);
+    const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<Profile | null>(null);
     const router = useRouter();
 
@@ -74,6 +76,11 @@ export default function AdminDashboard({ initialUsers }: AdminDashboardProps) {
         setSelectedUser(user);
         setIsUserDialogOpen(true);
     };
+
+    const handleShowHistory = (user: Profile) => {
+        setSelectedUser(user);
+        setIsHistoryDialogOpen(true);
+    }
 
     const handleAddNew = () => {
         setSelectedUser(null);
@@ -111,6 +118,11 @@ export default function AdminDashboard({ initialUsers }: AdminDashboardProps) {
                                 <DropdownMenuItem onClick={() => handleEdit(user as unknown as Profile)}>
                                     Modifier
                                 </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleShowHistory(user as unknown as Profile)}>
+                                    <History className="mr-2 h-4 w-4" />
+                                    Historique
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
                                 <AlertDialogTrigger asChild>
                                     <DropdownMenuItem className="text-destructive focus:text-destructive">
                                         Supprimer
@@ -159,6 +171,11 @@ export default function AdminDashboard({ initialUsers }: AdminDashboardProps) {
             <UserDialog
                 isOpen={isUserDialogOpen}
                 setIsOpen={setIsUserDialogOpen}
+                user={selectedUser}
+            />
+            <GameHistoryDialog
+                isOpen={isHistoryDialogOpen}
+                setIsOpen={setIsHistoryDialogOpen}
                 user={selectedUser}
             />
         </div>
