@@ -51,10 +51,10 @@ export async function GET(request: Request) {
           });
         }
       }
-      return NextResponse.redirect(`${origin}${next}`);
+      return NextResponse.redirect(`https://truenumber.onrender.com${next}`);
     }
   }
 
   // return the user to an error page with instructions
-  return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+  return NextResponse.redirect(`https://truenumber.onrender.com/auth/auth-code-error`);
 }
