@@ -28,8 +28,8 @@ export default async function Profile() {
   if (!profileData) {
     console.error("Erreur lors de la récupération du profil ou profil non trouvé:");
     // This might happen if the profile creation in the callback failed.
-    // We log out the user to allow them to try signing up again.
-    await logout();
+    // We redirect the user to the home page to allow them to try signing up again.
+    // The logout will be handled by the middleware or the user can do it manually.
     redirect('/');
   }
 
