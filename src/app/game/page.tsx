@@ -42,9 +42,9 @@ export default async function GamePage() {
     }));
 
     return (
-        <div className="w-full max-w-4xl mx-auto p-4 space-y-8 animate-in fade-in duration-500">
-            <header className="flex items-center justify-between py-4 border-b">
-                <h1 className="text-2xl font-bold font-headline">Jeu TrueNumber</h1>
+        <div className="w-full max-w-4xl mx-auto p-4 md:p-6 lg:p-8 space-y-8 animate-in fade-in duration-500">
+            <header className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 border-b">
+                <h1 className="text-2xl font-bold font-headline text-center sm:text-left">Jeu TrueNumber</h1>
                 <Button variant="ghost" asChild>
                     <Link href="/profile">
                         <User className="mr-2 h-4 w-4" />

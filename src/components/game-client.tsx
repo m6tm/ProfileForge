@@ -122,9 +122,9 @@ export default function GameClient({ initialBalance, initialHistory }: GameClien
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>Résultat</TableHead>
-                                        <TableHead>Nombre</TableHead>
-                                        <TableHead>Variation</TableHead>
-                                        <TableHead>Date</TableHead>
+                                        <TableHead className="text-center">Nombre</TableHead>
+                                        <TableHead className="text-center">Variation</TableHead>
+                                        <TableHead className="text-right">Date</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -138,16 +138,16 @@ export default function GameClient({ initialBalance, initialHistory }: GameClien
                                                 >
                                                     {entry.result === 'win' ? 'Gagné' : 'Perdu'}
                                                 </TableCell>
-                                                <TableCell>{entry.number}</TableCell>
+                                                <TableCell className="text-center">{entry.number}</TableCell>
                                                 <TableCell
-                                                    className={cn(
+                                                    className={cn("text-center",
                                                         entry.balanceChange > 0 ? 'text-green-600' : 'text-red-600'
                                                     )}
                                                 >
                                                     {entry.balanceChange > 0 ? '+' : ''}{entry.balanceChange}
                                                 </TableCell>
-                                                <TableCell>
-                                                    {format(new Date(entry.createdAt), "d MMM yyyy, HH:mm", { locale: fr })}
+                                                <TableCell className="text-right">
+                                                    {format(new Date(entry.createdAt), "d MMM, HH:mm", { locale: fr })}
                                                 </TableCell>
                                             </TableRow>
                                         ))

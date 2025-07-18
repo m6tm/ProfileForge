@@ -48,13 +48,13 @@ export default async function Profile() {
   const isAdmin = profileData.role === 'ADMIN';
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4 space-y-8 animate-in fade-in duration-500">
-      <header className="flex items-center justify-between py-4 border-b">
+    <div className="w-full max-w-4xl mx-auto p-4 md:p-6 lg:p-8 space-y-8 animate-in fade-in duration-500">
+      <header className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 border-b">
         <div className="flex items-center gap-2">
           <Rocket className="w-8 h-8 text-primary" />
           <h1 className="text-2xl font-bold font-headline">TrueNumber</h1>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-center gap-2">
           {isAdmin && (
             <Button variant="outline" asChild>
               <Link href="/admin">

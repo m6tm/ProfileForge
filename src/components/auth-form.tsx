@@ -40,13 +40,13 @@ export default function AuthForm() {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-4">
+    <div className="flex flex-col items-center space-y-4 w-full px-4">
       <div className="flex items-center gap-2 text-2xl font-bold font-headline">
         <Rocket className="w-8 h-8 text-primary" />
         <h1>TrueNumber</h1>
       </div>
       {showVerificationMessage ? (
-        <Card className="w-[400px]">
+        <Card className="w-full max-w-sm">
           <CardHeader>
             <CardTitle>Vérifiez votre e-mail</CardTitle>
             <CardDescription>
@@ -55,7 +55,7 @@ export default function AuthForm() {
           </CardHeader>
         </Card>
       ) : (
-        <Tabs defaultValue="login" className="w-[400px]">
+        <Tabs defaultValue="login" className="w-full max-w-sm">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="login">Connexion</TabsTrigger>
             <TabsTrigger value="register">S'inscrire</TabsTrigger>

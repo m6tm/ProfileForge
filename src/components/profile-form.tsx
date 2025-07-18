@@ -156,7 +156,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
                   control={form.control}
                   name="preferences.newsletter"
                   render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <FormItem className="flex flex-col sm:flex-row items-start sm:items-center justify-between rounded-lg border p-4 gap-4">
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">Newsletter</FormLabel>
                         <FormDescription>Recevez des mises à jour sur les nouvelles fonctionnalités et le contenu.</FormDescription>
@@ -175,7 +175,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
                   control={form.control}
                   name="preferences.marketing"
                   render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <FormItem className="flex flex-col sm:flex-row items-start sm:items-center justify-between rounded-lg border p-4 gap-4">
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">E-mails marketing</FormLabel>
                         <FormDescription>Recevez des e-mails promotionnels et des offres.</FormDescription>
@@ -193,7 +193,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
               </div>
             </div>
             
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Button type="submit" disabled={isPending || !form.formState.isDirty}>
                 {isPending ? 'Enregistrement...' : 'Enregistrer les modifications'}
               </Button>

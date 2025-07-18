@@ -142,10 +142,10 @@ export default function AdminDashboard({ initialUsers }: AdminDashboardProps) {
     ], [deleteMutation]);
 
     return (
-        <div className="container mx-auto py-10">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold">Tableau de bord Admin</h1>
-                <div className="flex items-center gap-2">
+        <div className="container mx-auto py-4 sm:py-10">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+                <h1 className="text-2xl sm:text-3xl font-bold text-center sm:text-left">Tableau de bord Admin</h1>
+                <div className="flex items-center flex-wrap justify-center gap-2">
                     <Button onClick={handleProfile} variant="outline">
                         Profile
                     </Button>
